@@ -18,18 +18,22 @@
 
 import random
 import math
+from copy import deepcopy
 class MctsController:
+
+   
    #print ("here")
 
    def _init_ (self):
       self.tree = [] # tree element
       self.actions = [] # actions list
+      self.backup = [] # backup
       self.rootNode = random.randint(0,2) # s0 starting node
       self.node = 0
+      self.outcomeValue = 0 # outcome value
       self.player1 = 0
       self.player2 = 0
       self.player1Actions = []
-    
     #this will or should become the function for selecting the best move
    def selectMove(self):
        global move
@@ -37,32 +41,41 @@ class MctsController:
        return move
    
    def playerTest(self):
-      return random.randint(0,2)
+      global testmove
+      testmove = random.randint(0,2)
+      return testmove
    
-   def simulateRuns(self,board, movesPlayer1, movesPlayer2, runs):
+   def playerTest2(self):
+      global simMoves
+      simMoves = random.randint(0,2)
+      return simMoves	
+   
+   def simulateRuns(self,board, movesPlayer1, movesPlayer2):
       self.player1Actions = movesPlayer1
       self.actions = movesPlayer2
       board = board
-      while (runs > 0):
-         self.player2Actions = random.randint(0,2)
-         self.actions = random.randint(0,2)
-         runs = runs -1
-         if(all(board) != '#'):
-            print (board)
-            break
+      #print(board)
+     
 
 
 
 
-   def backpropagation(self):
-      global win,lose,draw
-      win = 1
-      lose = -1
-      draw = 0
-      print()
+   def backpropagation(self, outcome, board):
+      global sum
+      self.tree = board + [outcome]
+      self.tree = self.tree.append(self.tree)
+      self.backup = deepcopy(self.tree)
+
+      
+      
 
    def simulationTree(self):
-      print()
+      return self.backup
+   
+   def printOutcomeSum(self):
+      global sum
+      print(sum)
+
 
    def actionsTaken(self):
       print()
