@@ -8,9 +8,14 @@ def main():
    player2 = MctsController()
    positionListPlayer1 = []
    positionListPlayer2 = []
+   outcome = 0
+   sumOutcome =0
+   
+   
 
   # rowList = []
    while( not playGame.check()):
+      
       if (playGame.check()): break
 
       else:
@@ -23,12 +28,31 @@ def main():
          if (playGame.check()): break
          playGame.assign(player2.selectMove(),player2.selectMove(),'o')
          positionListPlayer2 = positionListPlayer2 + [[playGame.getRow(),playGame.getCol()]]
-        
-         player2.simulateRuns(playGame.getGameBoard(), positionListPlayer1, positionListPlayer2,10000) #-> in my simulation i should pass in the board state, and positions played
+
          if(playGame.legalGameMoves()):
             print ("Invalid move placement")
             #player2.simulations(playGame.assign(player2.selectMove(),player2.selectMove(),'o'))
             positionListPlayer2 = positionListPlayer2 + [[playGame.getRow(),playGame.getCol()]] # stores the positon the second player played
+
+         runs = 10000
+
+         while(runs > 0):
+
+            player2.simulateRuns(playGame.getGameBoard(), positionListPlayer1, positionListPlayer2) #-> in my simulation i should pass in the board state, and positions played
+            playGame.assign(player2.playerTest(),player2.playerTest(), 'x')
+            playGame.assign(player2.playerTest2(),player2.playerTest2(), 'o')
+            if(playGame.legalGameMoves()):
+               playGame.assign(player2.playerTest2(),player2.playerTest2())
+            if (playGame.check()):
+               outcome = playGame.outcome()
+               sumOutcome += outcome  
+               player2.backpropagation(playGame.outcome(),playGame.getGameBoard())
+               print(player2.simulationTree())
+               print(f"\nSum of outcomes: {sumOutcome}")
+            runs -= 1
+
+         
+
             #playGame.markedPositions()
          playGame.printBoard()   
          print(f"player 2's moves so far {positionListPlayer2}") 
