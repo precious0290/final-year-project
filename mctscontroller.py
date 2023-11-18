@@ -61,16 +61,18 @@ class MctsController:
 
 
    def backpropagation(self, outcome, board):
-      global sum
-      self.tree = board + [outcome]
-      self.tree = self.tree.append(self.tree)
+      global treelistSave, treelistAdd
+      treelistAdd = board + [outcome]
+      treelistSave = treelistAdd
+      self.tree = treelistAdd + treelistSave
+      #print(self.tree)
       self.backup = deepcopy(self.tree)
 
       
       
 
    def simulationTree(self):
-      return self.backup
+      print(self.backup)
    
    def printOutcomeSum(self):
       global sum
