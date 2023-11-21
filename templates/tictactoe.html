@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/tictactoe.css')}}">
+    <script src="{{url_for('static',filename='js/tictactoe.js')}}" defer ></script>
+    <title>TicTacToe Game Example</title>
+</head>
+<body>
+<div class="gameboard" id="gb">
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+</div>
+<div class="win-message" id="winMsg">
+    <div data-win-msg ></div>
+    <button class="restartbutton" id="rb">Restart Game</button>
+</div>  
+
+
+</body>
+</html>

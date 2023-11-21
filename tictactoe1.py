@@ -34,9 +34,6 @@ class Tictactoe:
     def getCol(self):
         return self.cols
 
-    def markedPositions():
-        print ()
-
 #this function checks whether the position that the player chose is free and also within scope 
     def legalGameMoves(self):
        # global choosingRow, choosingCol, matrix
@@ -48,8 +45,9 @@ class Tictactoe:
 
     def check(self):
         global win, winners
+        winners = False
         # Horizontal wins X
-        if((not any('#' in list for list in self.gameboard))):
+        if((not any('#' in list for list in self.gameboard)) and (winners == False)):
             print("\nGame ends in a draw!")
             pass
         

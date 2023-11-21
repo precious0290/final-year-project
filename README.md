@@ -31,4 +31,5 @@ https://math.stackexchange.com/questions/269066/game-combinations-of-tic-tac-toe
 
 https://stackoverflow.com/questions/51369718/python-how-can-i-find-if-an-item-exists-in-multidimensional-array
 
+https://en.wikipedia.org/wiki/Tic-tac-toe_variants#:~:text=Many%20board%20games%20share%20the,toe%20date%20back%20several%20millennia.
 
