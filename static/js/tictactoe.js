@@ -31,6 +31,9 @@ winMessageElement.classList.remove('show')
 }
 function handleClick(e){
    const cell= e.target
+   const row = cell.dataset.row;
+   const col = cell.dataset.col;
+   sendUserMove(row, col);
    const currentClass = oTurn ? O_class : X_class
    console.log(currentClass) 
    //placemark
@@ -45,8 +48,6 @@ function handleClick(e){
     // check for draw
     endGame(true)
    }
-   
- 
     
     //switch turns 
     swapTurns()
@@ -95,3 +96,27 @@ function checkWin(currentClass){
     })
     //returns true if some of the winning combonations have been met.
 }
+function sendUserMove(row, col) {
+    fetch('/make_user_move', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ row, col }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Handle the response from the backend if needed
+        console.log('Backend response:', data);
+      })
+      .catch(error => console.error('Error making user move:', error));
+  }
+
+  function getAiMove(){
+    fetch('/get_ai_move')
+        .then(response => response.json())
+        .then(data => {
+        updateBoard(data.row, data.col, 'O');
+        })
+        .catch(error => console.error('Error fetching AI move:', error));
+  }

@@ -6,18 +6,19 @@
     <link rel="stylesheet" href="{{url_for('static', filename='css/tictactoe.css')}}">
     <script src="{{url_for('static',filename='js/tictactoe.js')}}" defer ></script>
     <title>TicTacToe Game Example</title>
+    <h1>Welcome to Tictactoe</h1>
 </head>
 <body>
 <div class="gameboard" id="gb">
-    <div class="cell" data-cell></div>
-    <div class="cell" data-cell></div>
-    <div class="cell" data-cell></div>
-    <div class="cell" data-cell></div>
-    <div class="cell" data-cell></div>
-    <div class="cell" data-cell></div>
-    <div class="cell" data-cell></div>
-    <div class="cell" data-cell></div>
-    <div class="cell" data-cell></div>
+    <div class="cell" data-cell data-row="0" data-col="0"></div>
+    <div class="cell" data-cell data-row="0" data-col="1"></div>
+    <div class="cell" data-cell data-row="0" data-col="2"></div>
+    <div class="cell" data-cell data-row="1" data-col="0"></div>
+    <div class="cell" data-cell data-row="1" data-col="1"></div>
+    <div class="cell" data-cell data-row="1" data-col="2"></div>
+    <div class="cell" data-cell data-row="2" data-col="0"></div>
+    <div class="cell" data-cell data-row="2" data-col="1"></div>
+    <div class="cell" data-cell data-row="2" data-col="2"></div>
 </div>
 <div class="win-message" id="winMsg">
     <div data-win-msg ></div>

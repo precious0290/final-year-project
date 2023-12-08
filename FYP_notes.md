@@ -33,3 +33,11 @@ https://stackoverflow.com/questions/51369718/python-how-can-i-find-if-an-item-ex
 
 https://en.wikipedia.org/wiki/Tic-tac-toe_variants#:~:text=Many%20board%20games%20share%20the,toe%20date%20back%20several%20millennia.
 
+https://www.geeksforgeeks.org/ml-monte-carlo-tree-search-mcts/
+
+https://martin-ueding.de/posts/tic-tac-toe-with-monte-carlo-tree-search/
+
+https://www.geeksforgeeks.org/classes-and-objects-in-javascript/
+
+https://jeffbradberry.com/posts/2015/09/intro-to-monte-carlo-tree-search/
+
