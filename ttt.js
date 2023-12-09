@@ -1,7 +1,122 @@
-class Tree{
+/*class Tree{
 //nodes representing: child, parent, termination ? , visits ?, score ? ??
+  treeConstructor(gameboard,parentNode)
+  {
+        this.gameboard = gameboard;
+        if ((checkVictory(gameboard) == "win") || (checkVictory(gameboard) == "draw")) {
+           this.is_terminal = true
+
+        else:
+            this.is_terminal = false
+
+       this.is_fully_expanded = self.is_terminal
+        //initialise parent
+        this.parentNode = parentNode
+
+        //initialise number of nodes visited
+       this.numvisits = 0
+
+        //initialise total score of node
+        this.score = 0
+
+        //initialise current node's children
+        this.children = {}
+  }
+}
+*/ 
+
+/*
+class MCTS{
+    function searchTree(){
+
+      this.rootNodeExplorer = new Tree(liveboard,0);
+      numIterations = 0;
+
+      for(var iteration=0; iteration<numIterations; iteration++){
+        explorerNode = selectNode(this.rootNodeExplorer);
+        score = simulationRollot(explorerNode.gameboard);
+        backpropagation(explorerNode, score);
+
+      }
+    try{
+      return getPromisingMove(rootNodeExplorer,2)
+    }
+    catch{
+
+    }
+    }
+    function loopingAvailMoves(explorerNode)
+    {
+        availableMoves(this.gameboard);
+     // for(var i=0;i<this.gameboard.length;i++)
+    }
+
+    function expandNode(explorerNode)
+    {
+      legalBoardStates = explorerNode.availableMoves(this.gameboard);
+      while(legalBoardStates.forEach(loopingAvailMoves)!= false){
+          var boarstate = legalBoardStates.child
+          if(explorerNode.children.includes(boardstate.toString())){
+          newFoundNode = Tree(boardstate, explorerNode);
+          explorerNode.children[boardstate.toString()] = newFoundNode;
+
+          if(boardstate.length == explorerNode.children.length){
+            explorerNode.is_fully_explored = true
+          }
+
+
+        }
+      }
+      return newFoundNode;
+    }
+
+    function simulationRollout(gameboard){
+      while(checkVictory(this.gameboard) != true){
+        try{
+          gameboard = gameboard[(Math.floor(Math.random() * availableMoves(gameboard)))];
+        }
+        catch{
+          return 0;
+        }
+
+        //call outcome function
+          return 0
+      }
+    }
+
+    function backpropagation(explorerNode, score){
+      
+      while (explorerNode != null){
+        exploreNode.visits += 1;
+        explorerNode.score += score;
+        explorerNode = explorerNode.parentNode;
+      }
+    }
+
+    function getPromisingMove(explorerNode, explorationConstant)
+    {
+      bestScore = 0;
+      bestMoves = [];
+
+      //Define current players' markers
+
+      //UCT score calculation
+      moveScore = (currentPlayer *childNode.score /childNode.visits) + (explorationConstant * Math.sqrt(Math.log(explorerNode.visits)/childNode.visits))
+
+      if (moveScore > bestScore) {
+        bestScore = moveScore;
+        bestMoves.push(childNode);
+      }
+      else if(moveScore == bestScore) {
+        besMoves.push(childNode);
+      }
+
+      return bestMoves[(Math.floor(Math.random() * bestMoves.length))];
+    }
+
 }
 
+*/
 
 
 
@@ -10,6 +125,8 @@ var playerIcon = 'O';
 var AIMove;
 //settings for liveBoard: 1 is cpuIcon, -1 is playerIcon, 0 is empty
 var liveBoard = [1, -1, -1, -1, 1, 1, 1, -1, -1];
+/*var and let create variables that can be reassigned another value. const creates "constant" variables that cannot be reassigned another value */
+//const/var rootNodeExplorer = Tree(liveboard,0)
 var winningLines = [
   [0, 1, 2],
   [3, 4, 5],
@@ -96,10 +213,14 @@ function endGameMessage(){
 function startNewGame() {
   liveBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   $('.square').text("").removeClass('o-marker x-marker');
+  //renderProperties();
   renderBoard(liveBoard);
-  playerTakeTurn();
-}
 
+  //chooseMarker();
+  //chooseDifficulty();
+  playerTakeTurn();
+ // chooseMarker();
+}
 function playerTakeTurn() {
   $('.square:empty').hover(function() {
     $(this).text(playerIcon).css('cursor', 'pointer');
@@ -128,7 +249,7 @@ function playerTakeTurn() {
 //Backpropagation
 function aiTakeTurn() {
   //call mcts here
-  mcts(liveBoard, 'aiPlayer');
+ // mcts(liveBoard, 'aiPlayer');
   miniMax(liveBoard, 'aiPlayer');
   liveBoard[AIMove] = 1;
   renderBoard(liveBoard);
@@ -182,22 +303,38 @@ function availableMoves(board) {
 //Simulation
 //Backpropagation
 
-function mcts(state,player){
-  return searchMove(state, player);
+/*
+function mcts(gamestate,player){
+  return searchMove(gamestate, player);
 }
 
 //find an select the best move from the tree
-function searchMove(state, player){
+function selectMove(gamestate, player){
+return UCTCalulation(currentNode,explorationConstant)
+}
 
+function expandNode(explorerNode)
+{
+ while(explorerNode.is_terminal == false)
+ {
+#case where the node is fully expanded 
+    if node.is_fully_expanded:
+        node = self.get_best_move(node, 2)
+
+    #case where the node is not fully expanded
+    else:
+        #otherwise exapnd the node
+        return self.expand(node)
+ }
 }
 
 function gameSimulations(){
-  const player1 =
+  //use the expanded node to simulate the game and get the markers of each player
 
 }
 function backpropagation(){
 
-}
+} */
 //Use the methods and the functionality here to create the MCTS Part!
 //AI
 //minimax algorithm - explanation here: http://http://neverstopbuilding.com/minimax
@@ -237,6 +374,14 @@ function miniMax(state, player) {
 
 renderBoard(liveBoard);
 chooseMarker();
+
+/*
+function renderProperties(){
+ renderBoard(liveBoard);
+chooseMarker(); 
+}*/
+
+
 
 
 
