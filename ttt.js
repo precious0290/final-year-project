@@ -1,76 +1,121 @@
-/*class Tree{
+class Tree{
 //nodes representing: child, parent, termination ? , visits ?, score ? ??
+
+ //var is_terminal = false;
+ //var is_fully_expanded = false;
+ //var numvisits = 0;
+ //var score = 0;
+ //var children = {};
   treeConstructor(gameboard,parentNode)
   {
         this.gameboard = gameboard;
         if ((checkVictory(gameboard) == "win") || (checkVictory(gameboard) == "draw")) {
-           this.is_terminal = true
+           this.is_terminal = true;
+        }
+        else{
+          this.is_terminal = false;
+        }
+            
 
-        else:
-            this.is_terminal = false
-
-       this.is_fully_expanded = self.is_terminal
+       this.is_fully_expanded = self.is_terminal;
         //initialise parent
-        this.parentNode = parentNode
+        this.parentNode = parentNode;
 
         //initialise number of nodes visited
-       this.numvisits = 0
+       this.numvisits = 0;
 
         //initialise total score of node
-        this.score = 0
+        this.score = 0;
 
         //initialise current node's children
-        this.children = {}
+        this.children = {};
   }
 }
-*/ 
 
-/*
+
+
 class MCTS{
-    function searchTree(){
+
+ constructor(liveBoard,aiPlayer) {
+        this.liveBoard = liveBoard;
+        this.aiPlayer = aiPlayer;
+        this.searchTree() = this.searchTree(liveboard,aiPlayer);
+        this.selectNode() = this.selectNode(liveboard,aiPlayer);
+        this.expandNode() = this.expandNode(liveboard,aiPlayer);
+        this.simulationRollout() = this.simulationRollout(liveboard,aiPlayer);
+        this.getPromisingMove() = this.getPromisingMove(liveboard,2,aiPlayer);
+  }
+  //Select
+  searchTree(liveboard, aiPlayer){
 
       this.rootNodeExplorer = new Tree(liveboard,0);
-      numIterations = 0;
+      var numIterations = 1000;
 
       for(var iteration=0; iteration<numIterations; iteration++){
-        explorerNode = selectNode(this.rootNodeExplorer);
-        score = simulationRollot(explorerNode.gameboard);
+       var  explorerNode = selectNode(this.rootNodeExplorer);
+        var score = simulationRollot(explorerNode.gameboard, aiPlayer);
         backpropagation(explorerNode, score);
 
       }
     try{
-      return getPromisingMove(rootNodeExplorer,2)
+      return getPromisingMove(rootNodeExplorer,2,aiplayer)
     }
     catch{
 
     }
     }
-    function loopingAvailMoves(explorerNode)
-    {
-        availableMoves(this.gameboard);
-     // for(var i=0;i<this.gameboard.length;i++)
-    }
 
-    function expandNode(explorerNode)
+    selectNode(rootNodeExplorer)
     {
+      //make sure that we're dealing with non-terminal nodes
+      while(rootNodeExplorer.is_terminal == false){
+        if(rootNodeExplorer.ix_fully_expanded){
+          rootNodeExplorer = this.getPromisingMove(gameboard,rootNodeExplorer,2);
+        }
+        else{
+          return expandNode(rootNodeExplorer);
+        }
+      }
+      return rootNodeExplorer;
+    }
+   // function loopingAvailMoves(explorerNode)
+   // {
+   //     availableMoves(this.gameboard);
+     // for(var i=0;i<this.gameboard.length;i++)
+  //  } 
+      //expand
+     expandNode(explorerNode)
+    {
+
       legalBoardStates = explorerNode.availableMoves(this.gameboard);
-      while(legalBoardStates.forEach(loopingAvailMoves)!= false){
-          var boarstate = legalBoardStates.child
-          if(explorerNode.children.includes(boardstate.toString())){
-          newFoundNode = Tree(boardstate, explorerNode);
-          explorerNode.children[boardstate.toString()] = newFoundNode;
+
+      for(var boardState of legalBoardStates)
+      {
+          if(explorerNode.children.includes(boardstate.position.toString())){
+          var newFoundNode = Tree(boardstate, explorerNode);
+          explorerNode.children[boardstate.postion.toString()] = newFoundNode;
 
           if(boardstate.length == explorerNode.children.length){
             explorerNode.is_fully_explored = true
           }
+      }
+     // while(legalBoardStates.forEach(loopingAvailMoves)!= false){
+       //   var boarstate = legalBoardStates.child
+      //    if(explorerNode.children.includes(boardstate.position.toString())){
+      //    newFoundNode = Tree(boardstate, explorerNode);
+      //    explorerNode.children[boardstate.postion.toString()] = newFoundNode;
+
+      //    if(boardstate.length == explorerNode.children.length){
+       //     explorerNode.is_fully_explored = true
+       //   }
 
 
         }
+        return newFoundNode;
       }
-      return newFoundNode;
-    }
-
-    function simulationRollout(gameboard){
+      
+        //simulate
+    simulationRollout(gameboard,aiPlayer){
       while(checkVictory(this.gameboard) != true){
         try{
           gameboard = gameboard[(Math.floor(Math.random() * availableMoves(gameboard)))];
@@ -78,13 +123,31 @@ class MCTS{
         catch{
           return 0;
         }
+          if(aiPlayer == "X")
+          {
+            if(aiPlayer == "X")
+            {
+              return 1;
+            }
+            else{
+              return -1;
+            }
+          }
+          else if(aiPlayer == "O"){
+            if(aiPlayer == "O"){
+              return 1;
+            }
+            else{
+              return -1;
+            }
+          }
 
         //call outcome function
-          return 0
+       
       }
     }
-
-    function backpropagation(explorerNode, score){
+//backprop
+    backpropagation(explorerNode, score){
       
       while (explorerNode != null){
         exploreNode.visits += 1;
@@ -93,15 +156,36 @@ class MCTS{
       }
     }
 
-    function getPromisingMove(explorerNode, explorationConstant)
+    getPromisingMove(gameboard,explorerNode, explorationConstant, aiPlayer)
     {
+      var cpuIcon = aiPlayer;
+      var playerIcon = "";
+      if (cpuIcon == "X")
+      {
+          playerIcon = "O";
+      }
+      else{
+        playerIcon = "X";
+      }
       bestScore = 0;
       bestMoves = [];
+      var currentPlayer = 0;
 
       //Define current players' markers
-
+      //let childNode.gameboard.player of explorerNode.children.valueOf()
+        for(let childNode of explorerNode.children.valueOf())
+        {
+          if(childNode.gameboard == cpuIcon)
+          {
+            currentPlayer = 1;
+          }
+          else if(childNode.gameboard == playerIcon)
+          {
+            currentPlayer = -1;
+          }
+        }
       //UCT score calculation
-      moveScore = (currentPlayer *childNode.score /childNode.visits) + (explorationConstant * Math.sqrt(Math.log(explorerNode.visits)/childNode.visits))
+      moveScore = (currentPlayer *childNode.score/childNode.visits) + (explorationConstant * Math.sqrt(Math.log(explorerNode.visits)/childNode.visits));
 
       if (moveScore > bestScore) {
         bestScore = moveScore;
@@ -113,10 +197,11 @@ class MCTS{
 
       return bestMoves[(Math.floor(Math.random() * bestMoves.length))];
     }
+ }
 
-}
+    
 
-*/
+
 
 
 
@@ -250,7 +335,13 @@ function playerTakeTurn() {
 function aiTakeTurn() {
   //call mcts here
  // mcts(liveBoard, 'aiPlayer');
-  miniMax(liveBoard, 'aiPlayer');
+  mctsPlayer = new MCTS(liveBoard, 'aiPlayer');
+ var SearchNodeResults = mctsPlayer.searchTree(liveBoard, 'aiPlayer');
+ var expandNode = mctsPlayer.expandNode(liveBoard, searchNodeResults);
+ var simulationResult = mctsPlayer.simulationRollout(liveBoard,expandNode);
+ mctsPlayer.backpropagation(expandNode, simulationResult);
+
+ // miniMax(liveBoard, 'aiPlayer');
   liveBoard[AIMove] = 1;
   renderBoard(liveBoard);
   if (checkVictory(liveBoard)) {
