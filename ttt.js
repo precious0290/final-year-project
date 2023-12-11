@@ -39,12 +39,19 @@ class MCTS{
  constructor(liveBoard,aiPlayer) {
         this.liveBoard = liveBoard;
         this.aiPlayer = aiPlayer;
-        this.searchTree() = this.searchTree(liveboard,aiPlayer);
-        this.selectNode() = this.selectNode(liveboard,aiPlayer);
-        this.expandNode() = this.expandNode(liveboard,aiPlayer);
-        this.simulationRollout() = this.simulationRollout(liveboard,aiPlayer);
-        this.getPromisingMove() = this.getPromisingMove(liveboard,2,aiPlayer);
+      //  this.searchTree() = this.searchTree(liveboard,aiPlayer);
+      //  this.selectNode() = this.selectNode(liveboard,aiPlayer);
+      //  this.expandNode() = this.expandNode(liveboard,aiPlayer);
+       // this.simulationRollout() = this.simulationRollout(liveboard,aiPlayer);
+       // this.getPromisingMove() = this.getPromisingMove(liveboard,2,aiPlayer);
   }
+/*  availableMoves(state).forEach(function(square) {
+    state[square] = (player === 'aiPlayer') ? 1 : -1;
+    scores.push(mctsPlayer.searchTree(state, (player === 'aiPlayer') ? 'opponent' : 'aiPlayer'));
+    moves.push(square);
+    state[square] = 0;
+  });
+*/
   //Select
   searchTree(liveboard, aiPlayer){
 
@@ -52,11 +59,11 @@ class MCTS{
       var numIterations = 1000;
 
       for(var iteration=0; iteration<numIterations; iteration++){
-       var  explorerNode = selectNode(this.rootNodeExplorer);
-        var score = simulationRollot(explorerNode.gameboard, aiPlayer);
-        backpropagation(explorerNode, score);
-
+       var  explorerNode = this.selectNode(this.rootNodeExplorer);
+        var score = this.simulationRollout(explorerNode.gameboard, aiPlayer);
+        this.backpropagation(explorerNode, score);
       }
+
     try{
       return getPromisingMove(rootNodeExplorer,2,aiplayer)
     }
@@ -69,7 +76,7 @@ class MCTS{
     {
       //make sure that we're dealing with non-terminal nodes
       while(rootNodeExplorer.is_terminal == false){
-        if(rootNodeExplorer.ix_fully_expanded){
+        if(rootNodeExplorer.is_fully_expanded){
           rootNodeExplorer = this.getPromisingMove(gameboard,rootNodeExplorer,2);
         }
         else{
@@ -335,13 +342,14 @@ function playerTakeTurn() {
 function aiTakeTurn() {
   //call mcts here
  // mcts(liveBoard, 'aiPlayer');
+ 
+// var SearchNodeResults = mctsPlayer.searchTree(liveBoard, 'aiPlayer');
+ //var expandNode = mctsPlayer.expandNode(liveBoard, searchNodeResults);
+ //var simulationResult = mctsPlayer.simulationRollout(liveBoard,expandNode);
+// mctsPlayer.backpropagation(expandNode, simulationResult);
   mctsPlayer = new MCTS(liveBoard, 'aiPlayer');
- var SearchNodeResults = mctsPlayer.searchTree(liveBoard, 'aiPlayer');
- var expandNode = mctsPlayer.expandNode(liveBoard, searchNodeResults);
- var simulationResult = mctsPlayer.simulationRollout(liveBoard,expandNode);
- mctsPlayer.backpropagation(expandNode, simulationResult);
-
- // miniMax(liveBoard, 'aiPlayer');
+  mctsPlayer.searchTree(liveBoard, 'aiPlayer');
+ //miniMax(liveBoard, 'aiPlayer');
   liveBoard[AIMove] = 1;
   renderBoard(liveBoard);
   if (checkVictory(liveBoard)) {
@@ -351,7 +359,7 @@ function aiTakeTurn() {
     playerTakeTurn();
   }
 }
-
+//change how checkVictory logic finds win/loss in code for the MCTS function
 //UTILITIES
 function checkVictory(board) {
   var squaresInPlay = board.reduce(function(prev, cur) {
@@ -388,45 +396,7 @@ function availableMoves(board) {
     return (typeof e !== "undefined");
   });
 }
-// In this function there is an ai take turn method so we can use that to  implement the mcts functionality based on what i was sent for the java script
-// Search
-//Expansion
-//Simulation
-//Backpropagation
 
-/*
-function mcts(gamestate,player){
-  return searchMove(gamestate, player);
-}
-
-//find an select the best move from the tree
-function selectMove(gamestate, player){
-return UCTCalulation(currentNode,explorationConstant)
-}
-
-function expandNode(explorerNode)
-{
- while(explorerNode.is_terminal == false)
- {
-#case where the node is fully expanded 
-    if node.is_fully_expanded:
-        node = self.get_best_move(node, 2)
-
-    #case where the node is not fully expanded
-    else:
-        #otherwise exapnd the node
-        return self.expand(node)
- }
-}
-
-function gameSimulations(){
-  //use the expanded node to simulate the game and get the markers of each player
-
-}
-function backpropagation(){
-
-} */
-//Use the methods and the functionality here to create the MCTS Part!
 //AI
 //minimax algorithm - explanation here: http://http://neverstopbuilding.com/minimax
 function miniMax(state, player) {
@@ -445,12 +415,12 @@ function miniMax(state, player) {
   var moves = [];
   var scores = [];
   //for each of the available squares: recursively make moves and push the score + accompanying move to the moves + scores array
-  availableMoves(state).forEach(function(square) {
+ /* availableMoves(state).forEach(function(square) {
     state[square] = (player === 'aiPlayer') ? 1 : -1;
     scores.push(miniMax(state, (player === 'aiPlayer') ? 'opponent' : 'aiPlayer'));
     moves.push(square);
     state[square] = 0;
-  });
+  }); */
 
   //calculate and return the best score gathered from each of the available moves. track the best movein the AIMove variable
 
