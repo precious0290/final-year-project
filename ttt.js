@@ -47,7 +47,7 @@ class MCTS{
   }
 /*  availableMoves(state).forEach(function(square) {
     state[square] = (player === 'aiPlayer') ? 1 : -1;
-    scores.push(mctsPlayer.searchTree(state, (player === 'aiPlayer') ? 'opponent' : 'aiPlayer'));
+    scores.push(searchTree(state, (player === 'aiPlayer') ? 'opponent' : 'aiPlayer'));
     moves.push(square);
     state[square] = 0;
   });
@@ -65,7 +65,7 @@ class MCTS{
       }
 
     try{
-      return getPromisingMove(rootNodeExplorer,2,aiplayer)
+      AIMove = getPromisingMove(rootNodeExplorer,2,aiplayer)
     }
     catch{
 
@@ -229,6 +229,7 @@ var winningLines = [
   [0, 4, 8],
   [2, 4, 6]
 ];
+const cellElements = document.querySelectorAll('[data-cell]');
 
 //UI
 function renderBoard(board) {
@@ -362,15 +363,32 @@ function aiTakeTurn() {
 //change how checkVictory logic finds win/loss in code for the MCTS function
 //UTILITIES
 function checkVictory(board) {
-  var squaresInPlay = board.reduce(function(prev, cur) {
-    return Math.abs(prev) + Math.abs(cur);
-  });
+  var squaresInPlay = [...cellElements].every(cell => {
+    return cell.classList.contains(playerIcon)||cell.classList.contains(cpuIcon)
+});
+  /* function checkWin(currentClass){
+    return winning_combos.some(combination =>{
+        return combination.every(index =>{
+            return cellElements[index].classList.contains(currentClass)
+        })
+    })
+    
+    const cellElements = document.querySelectorAll('[data-cell]')
 
-  var outcome = winningLines.map(function(winLines) {
-    return winLines.map(function(winLine) {
-      return board[winLine];
-    }).reduce(function(prev, cur) {
-      return prev + cur;
+    return [...cellElements].every(cell => {
+        return cell.classList.contains(playerIcon)||cell.classList.contains(cpuIcon)
+    })
+    
+    */
+
+  var outcome = winningLines.some(combination => {
+    return combination.every(index => {
+      return board[index].classList.contains(playerIcon);
+      // return cellElements[index].classList.contains(currentClass);
+    });
+    return combination.every(index => {
+      return board[index].classList.contains(cpuIcon);
+      // return cellElements[index].classList.contains(currentClass);
     });
   }).filter(function(winLineTotal) {
     return Math.abs(winLineTotal) === 3;
@@ -399,7 +417,7 @@ function availableMoves(board) {
 
 //AI
 //minimax algorithm - explanation here: http://http://neverstopbuilding.com/minimax
-function miniMax(state, player) {
+/*function miniMax(state, player) {
   //base cases: check for an end state and if met - return the score from the perspective of the AI player.  
   var rv = checkVictory(state);
   if (rv === 'win') {
@@ -413,7 +431,7 @@ function miniMax(state, player) {
   }
 
   var moves = [];
-  var scores = [];
+  var scores = []; */
   //for each of the available squares: recursively make moves and push the score + accompanying move to the moves + scores array
  /* availableMoves(state).forEach(function(square) {
     state[square] = (player === 'aiPlayer') ? 1 : -1;
@@ -423,7 +441,7 @@ function miniMax(state, player) {
   }); */
 
   //calculate and return the best score gathered from each of the available moves. track the best movein the AIMove variable
-
+/*
   if (player === 'aiPlayer') {
     AIMove = moves[scores.indexOf(Math.max.apply(Math, scores))];
     return Math.max.apply(Math, scores);
@@ -432,6 +450,7 @@ function miniMax(state, player) {
     return Math.min.apply(Math, scores);
   }
 }
+*/
 
 renderBoard(liveBoard);
 chooseMarker();
