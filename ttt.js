@@ -1,12 +1,34 @@
+var cpuIcon = 'X';
+var playerIcon = 'O';
+var AIMove;
+//settings for liveBoard: 1 is cpuIcon, -1 is playerIcon, 0 is empty
+var liveBoard = [1, -1, -1, -1, 1, 1, 1, -1, -1];
+/*var and let create variables that can be reassigned another value. const creates "constant" variables that cannot be reassigned another value */
+//const/var rootNodeExplorer = Tree(liveboard,0)
+var winningLines = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+];
+const cellElements = document.querySelectorAll('[data-cell]');
+
+
+
 class Tree{
 //nodes representing: child, parent, termination ? , visits ?, score ? ??
-
- //var is_terminal = false;
- //var is_fully_expanded = false;
- //var numvisits = 0;
- //var score = 0;
- //var children = {};
-  treeConstructor(gameboard,parentNode)
+ gameboard;
+ is_terminal;
+ is_fully_expanded;
+ parentNode;
+ numvisits;
+ score;
+ children;
+  constructor(gameboard,parentNode)
   {
         this.gameboard = gameboard;
         if ((checkVictory(gameboard) == "win") || (checkVictory(gameboard) == "draw")) {
@@ -30,15 +52,28 @@ class Tree{
         //initialise current node's children
         this.children = {};
   }
+
+  availableMoves(board) {
+    return board.map(function(el, i) {
+      if (!el) {
+        return i;
+      }
+    }).filter(function(e) {
+      return (typeof e !== "undefined");
+    });
+  }
 }
 
 
 
 class MCTS{
+  liveBoard;
+  aiPlayer;
+ 
 
- constructor(liveBoard,aiPlayer) {
+ constructor(liveBoard,cpuIcon) {
         this.liveBoard = liveBoard;
-        this.aiPlayer = aiPlayer;
+        this.aiPlayer = cpuIcon;
       //  this.searchTree() = this.searchTree(liveboard,aiPlayer);
       //  this.selectNode() = this.selectNode(liveboard,aiPlayer);
       //  this.expandNode() = this.expandNode(liveboard,aiPlayer);
@@ -60,8 +95,10 @@ class MCTS{
 
       for(var iteration=0; iteration<numIterations; iteration++){
        var  explorerNode = this.selectNode(this.rootNodeExplorer);
-        var score = this.simulationRollout(explorerNode.gameboard, aiPlayer);
-        this.backpropagation(explorerNode, score);
+       //this.expandNode(this.rootNodeExplorer);
+
+        var score = this.simulationRollout(explorerNode, aiPlayer);
+        this.backpropagation(explorerNode.liveBoard, score);
       }
 
     try{
@@ -80,22 +117,18 @@ class MCTS{
           rootNodeExplorer = this.getPromisingMove(gameboard,rootNodeExplorer,2);
         }
         else{
-          return expandNode(rootNodeExplorer);
+          return this.expandNode(rootNodeExplorer);
         }
       }
       return rootNodeExplorer;
     }
-   // function loopingAvailMoves(explorerNode)
-   // {
-   //     availableMoves(this.gameboard);
-     // for(var i=0;i<this.gameboard.length;i++)
-  //  } 
-      //expand
-     expandNode(explorerNode)
+   expandNode(explorerNode)
     {
-
-      legalBoardStates = explorerNode.availableMoves(this.gameboard);
-
+      if (this.gameboard) {
+        legalBoardStates = explorerNode.availableMoves(this.gameboard);
+        // rest of the code...
+      
+ 
       for(var boardState of legalBoardStates)
       {
           if(explorerNode.children.includes(boardstate.position.toString())){
@@ -106,20 +139,12 @@ class MCTS{
             explorerNode.is_fully_explored = true
           }
       }
-     // while(legalBoardStates.forEach(loopingAvailMoves)!= false){
-       //   var boarstate = legalBoardStates.child
-      //    if(explorerNode.children.includes(boardstate.position.toString())){
-      //    newFoundNode = Tree(boardstate, explorerNode);
-      //    explorerNode.children[boardstate.postion.toString()] = newFoundNode;
-
-      //    if(boardstate.length == explorerNode.children.length){
-       //     explorerNode.is_fully_explored = true
-       //   }
-
 
         }
         return newFoundNode;
       }
+      }
+    
       
         //simulate
     simulationRollout(gameboard,aiPlayer){
@@ -154,7 +179,7 @@ class MCTS{
       }
     }
 //backprop
-    backpropagation(explorerNode, score){
+   static backpropagation(explorerNode, score){
       
       while (explorerNode != null){
         exploreNode.visits += 1;
@@ -212,24 +237,7 @@ class MCTS{
 
 
 
-var cpuIcon = 'X';
-var playerIcon = 'O';
-var AIMove;
-//settings for liveBoard: 1 is cpuIcon, -1 is playerIcon, 0 is empty
-var liveBoard = [1, -1, -1, -1, 1, 1, 1, -1, -1];
-/*var and let create variables that can be reassigned another value. const creates "constant" variables that cannot be reassigned another value */
-//const/var rootNodeExplorer = Tree(liveboard,0)
-var winningLines = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
-];
-const cellElements = document.querySelectorAll('[data-cell]');
+
 
 //UI
 function renderBoard(board) {
@@ -348,8 +356,8 @@ function aiTakeTurn() {
  //var expandNode = mctsPlayer.expandNode(liveBoard, searchNodeResults);
  //var simulationResult = mctsPlayer.simulationRollout(liveBoard,expandNode);
 // mctsPlayer.backpropagation(expandNode, simulationResult);
-  mctsPlayer = new MCTS(liveBoard, 'aiPlayer');
-  mctsPlayer.searchTree(liveBoard, 'aiPlayer');
+ const mctsPlayer = new MCTS(liveBoard, cpuIcon);
+  mctsPlayer.searchTree(liveBoard, cpuIcon);
  //miniMax(liveBoard, 'aiPlayer');
   liveBoard[AIMove] = 1;
   renderBoard(liveBoard);
@@ -363,9 +371,67 @@ function aiTakeTurn() {
 //change how checkVictory logic finds win/loss in code for the MCTS function
 //UTILITIES
 function checkVictory(board) {
+
+
+ // console.log("board length: " + board.length);
+
   var squaresInPlay = [...cellElements].every(cell => {
     return cell.classList.contains(playerIcon)||cell.classList.contains(cpuIcon)
 });
+var outcome = '';
+var charCounter =0;
+
+if(board !== undefined){
+  console.log(board.length);
+ var len = board.length;
+ 
+ for(let row=0;  row < len; row++)
+{
+  for(let col=0; col < board[row].length; col++){
+          //horizontal
+        if(board[row][col] == cpuIcon)
+        {
+          charCounter++;
+           if(charCounter == 3)
+        {
+            outcome = "win";
+            charCounter = 0;
+        }
+        else{
+          outcome = "lose";
+          charCounter = 0;
+        }
+        }   
+        if(board[col][row] ==cpuIcon)
+        {
+          charCounter++;
+          if(charCounter == 3)
+          {
+            outcome = "win";
+            charCounter = 0;
+          }
+          else{
+            outcome = "lose";
+            charCounter = 0;
+          }
+        }
+          
+          if(board[row][row] == cpuIcon){
+
+            charCounter++;
+          if(charCounter == 3)
+          {
+            outcome = "win";
+            charCounter = 0;
+          }
+          else{
+            outcome = "lose";
+            charCounter = 0;
+          }
+          }
+  }
+}
+}
   /* function checkWin(currentClass){
     return winning_combos.some(combination =>{
         return combination.every(index =>{
@@ -379,30 +445,29 @@ function checkVictory(board) {
         return cell.classList.contains(playerIcon)||cell.classList.contains(cpuIcon)
     })
     
+    */ /* 
+    1. Loop through board state elements
+    1.1 -> How to loop through board state elements ?
+    1.2  -> how to check for consecutive state elements in board state
+    1.3 -> Is there a better method to check for consecutive state elements in board state
+
+    2. return the outcome of the loop -> win/loss, draw
+    2.1 -> draw is when there is no win/lose
+    2.2 -> win/loss is when there is 3 consecutive state elements 
     */
-
-  var outcome = winningLines.some(combination => {
-    return combination.every(index => {
-      return board[index].classList.contains(playerIcon);
-      // return cellElements[index].classList.contains(currentClass);
-    });
-    return combination.every(index => {
-      return board[index].classList.contains(cpuIcon);
-      // return cellElements[index].classList.contains(currentClass);
-    });
-  }).filter(function(winLineTotal) {
-    return Math.abs(winLineTotal) === 3;
-  });
-
-  if (outcome[0] === 3) {
+   if(outcome === 'win'){
     return 'win';
-  } else if (outcome[0] === -3) {
+
+   }
+   else if(outcome === 'lose'){
     return 'lose';
-  } else if (squaresInPlay === 9) {
+   }
+   else if(squaresInPlay === 9){
     return 'draw';
-  } else {
+   }
+   else{
     return false;
-  }
+   }
 }
 
 function availableMoves(board) {
