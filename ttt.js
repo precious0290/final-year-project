@@ -167,18 +167,18 @@ var outcome = '';
   for(var line of winningLines){
     var [a, b, c] = line;
     if(board[a] && board[a] === board[b] && board[a] === board[c]){
-      outcome = cpuIcon ? 'win' : 'lose';
+      outcome = cpuIcon ? cpuIcon : playerIcon;
     }
   }
   if(board.every(cell => cell !== 0)){
     outcome = 'draw';
   }
 
-   if(outcome === 'win'){
+   if(outcome === cpuIcon){
     return 'win';
 
    }
-   else if(outcome === 'lose'){
+   else if(outcome === playerIcon){
     return 'lose';
    }
    else if(outcome === 'draw'){
@@ -237,7 +237,7 @@ function availableMoves(board) {
 */
 class Tree{
   //nodes representing: child, parent, termination ? , visits ?, score ? ??
-   gameboard;
+   gameboard = [1, -1, -1, -1, 1, 1, 1, -1, -1];
    is_terminal;
    is_fully_expanded;
    parentNode;
@@ -300,38 +300,40 @@ function Expansion(explorerNode){
 
 function Simulation(explorerNode){
   //playgame state ?
+  
+  console.log('node.gameboard:', explorerNode.gameboard);
+  var tempBoard = [...explorerNode.gameboard];
   var player1 = playerIcon;
   var player2 = cpuIcon;
   var currentPlayer = player1;
-  var tempBoard = [...explorerNode.gameboard];
-  if(Array.isArray(node.gameboard)){
-    var tempBoard = [...explorerNode.gameboard];
-  }
-  else{
+
+  if(!Array.isArray(node.gameboard)){
     console.log("tempboard not iterable");
+    return;
   }
-
-
+  
   while(true){
     var movesAvailable = availableMoves(tempBoard);
     if((movesAvailable.length === 0) || (checkVictory(tempBoard))){
       break;
   }
-  var move = availableMoves[Math.floor(Math.random() * movesAvailable.length)];
-  tempBoard[move] = currentPlayer;
-
-  currentPlayer = (currentPlayer === player1) ? player2 : player1;
-
-  var gameResult = checkVictory(tempBoard);
-  if(gameResult === 'win' && currentPlayer === player1){
-    return -1;
-  }
-  else if(gameResult === 'win' && currentPlayer === player2){
-    return 1;
-  }
   else{
-    return 0;
+    var move = movesAvailables[Math.floor(Math.random() * movesAvailable.length)];
+    tempBoard[move] = currentPlayer;
+    currentPlayer = (currentPlayer === player1) ? player2 : player1;  
   }
+  
+  var gameResult = checkVictory(tempBoard);
+    if(gameResult === 'win' && currentPlayer === player1){
+      return -1; //if player wins return -1
+    }
+    else if(gameResult === 'win' && currentPlayer === player2){
+      return 1; // if AI wins return 1
+    }
+    else{
+      return 0; //If draw return 0
+    }
+ 
 }
   
   /* 
@@ -350,9 +352,9 @@ function Simulation(explorerNode){
 }
 function Backpropagation(score, explorerNode){
   while(explorerNode !== null){    
-    explorerNode.numvisits += 1;
-    explorerNode.score += score;
-    explorerNode = explorerNode.parentNode;
+    explorerNode.numvisits += 1; //+1 for node visited
+    explorerNode.score += score; //add the score of simulation result
+    explorerNode = explorerNode.parentNode; //explorer node becomes the parent
   }
   
 } 
