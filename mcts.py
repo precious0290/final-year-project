@@ -3,22 +3,20 @@ import random
 
 class TreeNode():
     #class constructor --> (create a tree node class instance)
-    def __init__(self, board, parent):
+    def __init__(self, game_state, parent=None):
         #initialise the board state
-        self.board = board
-
+        self.state= game_state
         #is node terminal flag
-        if self.board.is_win() or self.board.is_draw():
-            self.is_terminal = True
+        self.terminal = game_state.is_win() or game_state.is_draw()
 
-        else:
-            self.is_terminal = False
+        self.untried_actions = game_state.get_legal_moves()
 
         #set is fully expanded flag
         self.is_fully_expanded = self.is_terminal
 
         #init parent node (if available)
         self.parent = parent
+        self.wins = 0
 
         # init number of nodes visited
         self.visits = 0
@@ -27,24 +25,23 @@ class TreeNode():
         self.score = 0
 
         #init current node's children
-        self.children = {}
+        self.children = []
 
 class MCTS():
     #search for best move in current position
     def search(self, initial_state):
         #init root node
-        self.root = TreeNode(initial_state, None)
+        self.root = TreeNode(initial_state)
 
         #number of iterations
         n = 1000
-
         #look at n (1000) iterations
         for iteration in range(n):
             #select node (selection phase)
             node = self.select(self.root)
 
             #score current node (simulation phase)
-            score = self.rollout(node.board)
+            score = self.rollout(node.state)
 
             #backpropagate the number of visits and score up to the root node
             self.backpropagate(node, score)

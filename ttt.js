@@ -133,8 +133,8 @@ function playerTakeTurn() {
 //Backpropagation
 function aiTakeTurn() {
   //call mcts here
- const mctsPlayer = new MCTS(liveBoard, cpuIcon,AIMove);
-  AIMove = mctsPlayer.searchTree();
+ //const mctsPlayer = new MCTS(liveBoard, cpuIcon,AIMove);
+  AIMove = Selection(liveBoard);
  //miniMax(liveBoard, 'aiPlayer');
  if(AIMove !== undefined) { 
   liveBoard[AIMove] = 1;
@@ -151,80 +151,9 @@ function aiTakeTurn() {
 //UTILITIES
 function checkVictory(board) {
 
-
- // console.log("board length: " + board.length);
-
-  var squaresInPlay = [...cellElements].every(cell => {
-    return cell.classList.contains(playerIcon)||cell.classList.contains(cpuIcon)
-});
 var outcome = '';
-var charCounter =0;
-
-if(board !== undefined){
-  console.log(board.length);
- var len = board.length;
- 
- for(let row=0;  row < len; row++)
-{
-  for(let col=0; col < board[row].length; col++){
-          //horizontal
-        if(board[row][col] == cpuIcon)
-        {
-          charCounter++;
-           if(charCounter == 3)
-        {
-            outcome = "win";
-            charCounter = 0;
-        }
-        else{
-          outcome = "lose";
-          charCounter = 0;
-        }
-        }   
-        if(board[col][row] ==cpuIcon)
-        {
-          charCounter++;
-          if(charCounter == 3)
-          {
-            outcome = "win";
-            charCounter = 0;
-          }
-          else{
-            outcome = "lose";
-            charCounter = 0;
-          }
-        }
-          
-          if(board[row][row] == cpuIcon){
-
-            charCounter++;
-          if(charCounter == 3)
-          {
-            outcome = "win";
-            charCounter = 0;
-          }
-          else{
-            outcome = "lose";
-            charCounter = 0;
-          }
-          }
-  }
-}
-}
-  /* function checkWin(currentClass){
-    return winning_combos.some(combination =>{
-        return combination.every(index =>{
-            return cellElements[index].classList.contains(currentClass)
-        })
-    })
-    
-    const cellElements = document.querySelectorAll('[data-cell]')
-
-    return [...cellElements].every(cell => {
-        return cell.classList.contains(playerIcon)||cell.classList.contains(cpuIcon)
-    })
-    
-    */ /* 
+ // console.log("board length: " + board.length);
+  /* 
     1. Loop through board state elements
     1.1 -> How to loop through board state elements ?
     1.2  -> how to check for consecutive state elements in board state
@@ -234,6 +163,17 @@ if(board !== undefined){
     2.1 -> draw is when there is no win/lose
     2.2 -> win/loss is when there is 3 consecutive state elements 
     */
+
+  for(var line of winningLines){
+    var [a, b, c] = line;
+    if(board[a] && board[a] === board[b] && board[a] === board[c]){
+      outcome = cpuIcon ? 'win' : 'lose';
+    }
+  }
+  if(board.every(cell => cell !== 0)){
+    outcome = 'draw';
+  }
+
    if(outcome === 'win'){
     return 'win';
 
@@ -241,7 +181,7 @@ if(board !== undefined){
    else if(outcome === 'lose'){
     return 'lose';
    }
-   else if(squaresInPlay === 9){
+   else if(outcome === 'draw'){
     return 'draw';
    }
    else{
@@ -331,186 +271,94 @@ class Tree{
   getLiveboard(){
     return this.gameboard;
   }
-    availableMoves(board) {
-      return board.map(function(el, i) {
-        if (!el) {
-          return i;
-        }
-      }).filter(function(e) {
-        return (typeof e !== "undefined");
-      });
-    }
+  }
+  //MCTS Attempt
+
+  //Selection
+function Selection(liveBoard){
+  var rootNodeExplorer = Tree(liveBoard, this);
+  var iterations = 1000;
+
+  for(var i = 0; i < iterations;i++){
+    var explorerNode = rootNodeExplorer;
+    explorerNode = Expansion(explorerNode);
+    var score = Simulation(explorerNode);
+    var backpropresult = Backpropagation(score, explorerNode);
+    AIMove = UCT(backpropresult, explorerNode);
+  }
+  return AIMove;
+}
+
+function Expansion(explorerNode){
+  if(explorerNode.is_terminal == true){
+      return explorerNode;
+  }
+  else{
+    return explorerNode.children;
+  }
+}
+
+function Simulation(explorerNode){
+  //playgame state ?
+  var player1 = playerIcon;
+  var player2 = cpuIcon;
+  var currentPlayer = palyer1;
+  var tempBoard = [...explorerNode.gameboard];
+
+  while(true){
+    var movesAvailable = availableMoves(tempBoard);
+    if(movesAvailable.length === 0) || (checkVictory(tempBoard)){
+      break;
+  }
+  var move = availableMoves[Math.floor(Math.random() * movesAvailable.length)];
+  tempBoard[move] = currentPlayer;
+
+  currentPlayer = (currentPlayer === player1) ? player2 : player1;
+
+  var gameResult = checkVictory(tempBoard);
+  if(gameResult === 'win' && currentPlayer === player1){
+    return -1;
+  }
+  else if(gameResult === 'win' && currentPlayer === player2){
+    return 1;
+  }
+  else{
+    return 0;
+  }
+}
+  
+  /* 
+  if(player2 wins){
+
+    return 1;
+  }
+  else if(player1 wins){
+    return -1;
+  }
+  else{
+    return 0;
   }
   
-  
-  
-  class MCTS{
-    liveBoard;
-    aiPlayer;
-    AIMove;
-    rootNodeExplorer;
-    explorerNode;
-   
-  
-   constructor(liveBoard,cpuIcon, AIMove) {
-          this.liveBoard = liveBoard;
-          this.aiPlayer = cpuIcon;
-          this.AIMove = AIMove;
-        //  this.searchTree() = this.searchTree(liveboard,aiPlayer);
-        //  this.selectNode() = this.selectNode(liveboard,aiPlayer);
-        //  this.expandNode() = this.expandNode(liveboard,aiPlayer);
-         // this.simulationRollout() = this.simulationRollout(liveboard,aiPlayer);
-         // this.getPromisingMove() = this.getPromisingMove(liveboard,2,aiPlayer);
-    }
-  /*  availableMoves(state).forEach(function(square) {
-      state[square] = (player === 'aiPlayer') ? 1 : -1;
-      scores.push(searchTree(state, (player === 'aiPlayer') ? 'opponent' : 'aiPlayer'));
-      moves.push(square);
-      state[square] = 0;
-    });
   */
-    getBoard(){
-      return this.liveBoard;
-    }
-    //Select
-   searchTree(){
+}
+function Backpropagation(score, explorerNode){
+  while(explorerNode !== null){    
+    explorerNode.numvisits += 1;
+    explorerNode.score += score;
+    explorerNode = explorerNode.parentNode;
+  }
   
-        this.rootNodeExplorer = new Tree(this.liveboard,1);
-        //var gameBoard = this.rootNodeExplorer.getLiveboard();
-        var numIterations = 1000;
+} 
+
+function UCT(backpropresult, explorerNode){
+  var constNode = Math.sqrt(2);
+  if(explorerNode.numvisits == 0){
+    return Infinity;
+  }
+  return Math.floor((explorerNode.score/explorerNode.numvisits) + constNode * Math.sqrt(Math.log(explorerNode.parentNode.numvisits)/ explorerNode.numvisits));
+  //Math Formula
+}
   
-        for(var iteration=0; iteration<numIterations; iteration++){
-          this.explorerNode = this.selectNode(this.rootNodeExplorer);
-         //this.expandNode(this.rootNodeExplorer);
-         this.gboard = this.getBoard();
-          var score = this.simulationRollout(this.explorerNode.gboard, this.aiPlayer);
-          this.backpropagation(this.explorerNode.gboard, score);
-        }
-        this.AIMove = this.getPromisingMove(rootNodeExplorer,2,aiplayer);
-        return this.AIMove;
-      }
-  
-      selectNode(rootNodeExplorer)
-      {
-        //make sure that we're dealing with non-terminal nodes
-        while(rootNodeExplorer.is_terminal == false){
-          if(rootNodeExplorer.is_fully_expanded){
-            rootNodeExplorer = this.getPromisingMove(gameboard,rootNodeExplorer,2);
-          }
-          else{
-            return this.expandNode(rootNodeExplorer);
-          }
-        }
-        return rootNodeExplorer;
-      }
-     expandNode(explorerNode)
-      {
-        if (this.gameboard) {
-          legalBoardStates = explorerNode.availableMoves(this.gameboard);
-          // rest of the code...
-        
-   
-        for(var boardState of legalBoardStates)
-        {
-            if(explorerNode.children.includes(boardstate.position.toString())){
-            var newFoundNode = Tree(boardstate, explorerNode);
-            explorerNode.children[boardstate.postion.toString()] = newFoundNode;
-  
-            if(boardstate.length == explorerNode.children.length){
-              explorerNode.is_fully_explored = true;
-            }
-        }
-  
-          }
-          return newFoundNode;
-        }
-        }
-      
-        
-          //simulate
-      simulationRollout(gameboard,aiPlayer){
-        while(checkVictory(this.gameboard) != true){
-          try{
-            gameboard = gameboard[(Math.floor(Math.random() * availableMoves(gameboard)))];
-          }
-          catch{
-            return 0;
-          }
-            if(aiPlayer == "X")
-            {
-              if(aiPlayer == "X")
-              {
-                return 1;
-              }
-              else{
-                return -1;
-              }
-            }
-            else if(aiPlayer == "O"){
-              if(aiPlayer == "O"){
-                return 1;
-              }
-              else{
-                return -1;
-              }
-            }
-  
-          //call outcome function
-         
-        }
-      }
-  //backprop
-     static backpropagation(explorerNode, score){
-        
-        while (explorerNode != null){
-          exploreNode.visits += 1;
-          explorerNode.score += score;
-          explorerNode = explorerNode.parentNode;
-        }
-      }
-  
-      getPromisingMove(gameboard,explorerNode, explorationConstant, aiPlayer)
-      {
-        var cpuIcon = aiPlayer;
-        var playerIcon = "";
-        if (cpuIcon == "X")
-        {
-            playerIcon = "O";
-        }
-        else{
-          playerIcon = "X";
-        }
-        bestScore = 0;
-        bestMoves = [];
-        var currentPlayer = 0;
-  
-        //Define current players' markers
-        //let childNode.gameboard.player of explorerNode.children.valueOf()
-          for(let childNode of explorerNode.children.valueOf())
-          {
-            if(childNode.gameboard == cpuIcon)
-            {
-              currentPlayer = 1;
-            }
-            else if(childNode.gameboard == playerIcon)
-            {
-              currentPlayer = -1;
-            }
-          }
-        //UCT score calculation
-        moveScore = (currentPlayer *childNode.score/childNode.visits) + (explorationConstant * Math.sqrt(Math.log(explorerNode.visits)/childNode.visits));
-  
-        if (moveScore > bestScore) {
-          bestScore = moveScore;
-          bestMoves.push(childNode);
-        }
-        else if(moveScore == bestScore) {
-          besMoves.push(childNode);
-        }
-  
-        return bestMoves[(Math.floor(Math.random() * bestMoves.length))];
-      }
-   }
   
       
   
