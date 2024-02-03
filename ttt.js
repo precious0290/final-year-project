@@ -246,7 +246,7 @@ class Tree{
    children;
     constructor(gameboard,parentNode)
     {
-          this.gameboard = gameboard;
+            this.gameboard = Array.isArray(gameboard) ? [...gameboard] : [];
           if ((checkVictory(gameboard) == "win") || (checkVictory(gameboard) == "draw")) {
              this.is_terminal = true;
           }
@@ -276,7 +276,7 @@ class Tree{
 
   //Selection
 function Selection(liveBoard){
-  var rootNodeExplorer = Tree(liveBoard, this);
+  var rootNodeExplorer = new Tree(liveBoard, this);
   var iterations = 1000;
 
   for(var i = 0; i < iterations;i++){
@@ -302,12 +302,19 @@ function Simulation(explorerNode){
   //playgame state ?
   var player1 = playerIcon;
   var player2 = cpuIcon;
-  var currentPlayer = palyer1;
+  var currentPlayer = player1;
   var tempBoard = [...explorerNode.gameboard];
+  if(Array.isArray(node.gameboard)){
+    var tempBoard = [...explorerNode.gameboard];
+  }
+  else{
+    console.log("tempboard not iterable");
+  }
+
 
   while(true){
     var movesAvailable = availableMoves(tempBoard);
-    if(movesAvailable.length === 0) || (checkVictory(tempBoard)){
+    if((movesAvailable.length === 0) || (checkVictory(tempBoard))){
       break;
   }
   var move = availableMoves[Math.floor(Math.random() * movesAvailable.length)];
