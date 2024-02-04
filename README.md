@@ -10,7 +10,7 @@
 
 2.Node Expansion
 
-3.Rollout (random simulation)
+    3.Rollout (random simulation)
 
 4.Backpropagation
 

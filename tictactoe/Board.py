@@ -1,5 +1,5 @@
 from copy import deepcopy
-from mcts import *
+from tictactoe.mcts import MCTS
 
 class Board():
     # create constructor (init board class instance)
