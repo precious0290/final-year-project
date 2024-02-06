@@ -171,18 +171,17 @@ var outcome = '';
     }
   }
   if(board.every(cell => cell !== 0)){
-    outcome = 'draw';
+    outcome = "draw";
   }
-
-   if(outcome === cpuIcon){
-    return 'win';
+   else if(outcome === cpuIcon){
+    return "win";
 
    }
    else if(outcome === playerIcon){
-    return 'lose';
+    return "loss";
    }
-   else if(outcome === 'draw'){
-    return 'draw';
+   else if(outcome === "draw"){
+    return "draw";
    }
    else{
     return false;
@@ -237,7 +236,7 @@ function availableMoves(board) {
 */
 class Tree{
   //nodes representing: child, parent, termination ? , visits ?, score ? ??
-   gameboard = [1, -1, -1, -1, 1, 1, 1, -1, -1];
+   gameboard;
    is_terminal;
    is_fully_expanded;
    parentNode;
@@ -246,7 +245,7 @@ class Tree{
    children;
     constructor(gameboard,parentNode)
     {
-            this.gameboard = Array.isArray(gameboard) ? [...gameboard] : [];
+            this.gameboard = gameboard;
           if ((checkVictory(gameboard) == "win") || (checkVictory(gameboard) == "draw")) {
              this.is_terminal = true;
           }
@@ -255,7 +254,7 @@ class Tree{
           }
               
   
-         this.is_fully_expanded = self.is_terminal;
+         this.is_fully_expanded = this.is_terminal; //shows the expanded state of the nodde
           //initialise parent
           this.parentNode = parentNode;
   
@@ -272,13 +271,13 @@ class Tree{
     return this.gameboard;
   }
   }
-  //MCTS Attempt
+  //MCTS Attempt -> chatgpt provided me with helpful suggestions and debug handling still having problems
 
   //Selection
 function Selection(liveBoard){
-  var rootNodeExplorer = new Tree(liveBoard, this);
-  var iterations = 1000;
-
+  var rootNodeExplorer = new Tree(liveBoard, this); //class Tree object
+  var iterations = 1000; //number of iterations for the for loop, most people seem to ue 1000
+//looping the actions of expanding the tree, simulating the game, performing backpropagation and UCT and returning the selected move
   for(var i = 0; i < iterations;i++){
     var explorerNode = rootNodeExplorer;
     explorerNode = Expansion(explorerNode);
@@ -288,26 +287,69 @@ function Selection(liveBoard){
   }
   return AIMove;
 }
-
+//Expansion deals with finding a node that is not a terminal node in order to explore potential moves
+//for the AI player
+//If the tree is fully expanded/node is terminal the node is returned else child nodes is returned
 function Expansion(explorerNode){
   if(explorerNode.is_terminal == true){
       return explorerNode;
   }
   else{
-    return explorerNode.children;
+    var unexploredMoves = getUnexploredNode(explorerNode);
+    if(unexploredMoves.length > 0){
+      var moves = unexploredMoves[Math.floor(Math.random()*unexploredMoves.length)];
+      var child = expandNode(explorerNode, moves);
+      updateNodeExpansionStatus(explorerNode);
+      return child;
+    }
+    else{
+      explorerNode.is_fully_expanded = true;
+      return explorerNode;
+    }
   }
 }
 
+function getUnexploredNode(explorerNode)
+{
+  var possibleNodes = availableMoves(explorerNode.gameboard);
+  var exploredNodes = Object.keys(explorerNode.children).map(Number); //Number changes the string representation of the board to numbers
+  return possibleNodes.filter(move => !exploredNodes.includes(move));
+}
+function expandNode(explorerNode, move){
+  var newBoard = explorerNode.gameboard.map((x) => x);
+  newBoard[move] = getCurrentPlayer(newBoard);
+  var childNode = new Tree(newBoard, explorerNode);
+  explorerNode.children[move] = childNode;
+  return childNode;
+}
+function getCurrentPlayer(board) {
+  // Count 'X's and 'O's on the board
+  var xCount = board.filter(cell => cell === 'X').length;
+  var oCount = board.filter(cell => cell === 'O').length;
+
+  // Determine the current player
+  if (xCount > oCount) {
+      return 'O'; // 'O's turn
+  } else {
+      return 'X'; // 'X's turn
+  }
+}
+function updateNodeExpansionStatus(explorerNode){
+  var unexploredMoves = getUnexploredNode(explorerNode);
+  if(unexploredMoves.length === 0){
+    explorerNode.is_fully_expanded = true;
+  }
+}
 function Simulation(explorerNode){
-  //playgame state ?
+  //playgame state between the selected node and returning the score of the complete game
   
-  console.log('node.gameboard:', explorerNode.gameboard);
-  var tempBoard = [...explorerNode.gameboard];
+  console.log('explorer.gameboard:', explorerNode.gameboard);
+  var tempBoard = explorerNode.gameboard.map((x) => x);
   var player1 = playerIcon;
   var player2 = cpuIcon;
   var currentPlayer = player1;
 
-  if(!Array.isArray(node.gameboard)){
+  if(!Array.isArray(explorerNode.gameboard)){
     console.log("tempboard not iterable");
     return;
   }
@@ -318,7 +360,7 @@ function Simulation(explorerNode){
       break;
   }
   else{
-    var move = movesAvailables[Math.floor(Math.random() * movesAvailable.length)];
+    var move = movesAvailable[Math.floor(Math.random() * movesAvailable.length)];
     tempBoard[move] = currentPlayer;
     currentPlayer = (currentPlayer === player1) ? player2 : player1;  
   }
@@ -358,14 +400,14 @@ function Backpropagation(score, explorerNode){
   }
   
 } 
-
+//UCT implementation with the formula
 function UCT(backpropresult, explorerNode){
   var constNode = Math.sqrt(2);
   if(explorerNode.numvisits == 0){
     return Infinity;
   }
   return Math.floor((explorerNode.score/explorerNode.numvisits) + constNode * Math.sqrt(Math.log(explorerNode.parentNode.numvisits)/ explorerNode.numvisits));
-  //Math Formula
+  //Math Formula -? wins/visits + constant * sqrt(log Parent visits/ visits)
 }
   
   
