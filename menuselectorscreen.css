@@ -1,34 +1,9 @@
 body {
-    background-image: url('./images/titlescreen_background.png');
+    background-image: url('./images/main_background.png');
 }
 /*text-decoration: none removes the underline of the link */
 body a{
     text-decoration: none;
-}
-.container {
-    top: 50%;
-    left: 50%;
-    
-    
-}
-
-.titlescreen {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 92px;
-    font-weight: 700;
-    
-}
-.gameLogo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-}
-.gameLogo img{
- height: 400px;
- width: 800px;
 }
 /*
 Mobile (Smartphone) max-width: 480px.
