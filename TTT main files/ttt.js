@@ -75,7 +75,7 @@ function chooseMarker() {
 
 function endGameMessage(){
   var result = checkVictory(liveBoard);
-  $('.end-game-modal h3').text(result === 'win' ? 'You Lost' : "It's a draw");
+  $('.end-game-modal h3').text(result === "win" ? 'You Lost' : "It's a draw");
   
   $('.modal-container').css('display', 'block');
   $('.end-game-modal').css('display','block').removeClass('animated bounceOutDown').addClass('animated bounceInUp');
@@ -272,10 +272,10 @@ class Tree{
   }
   }
   //MCTS Attempt -> chatgpt provided me with helpful suggestions and debug handling still having problems
-
+ var rootNodeExplorer = new Tree(liveBoard, this); //class Tree object
   //Selection
 function Selection(liveBoard){
-  var rootNodeExplorer = new Tree(liveBoard, this); //class Tree object
+ 
   var iterations = 1000; //number of iterations for the for loop, most people seem to ue 1000
 //looping the actions of expanding the tree, simulating the game, performing backpropagation and UCT and returning the selected move
   for(var i = 0; i < iterations;i++){
