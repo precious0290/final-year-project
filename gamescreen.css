@@ -1,0 +1,14 @@
+body {
+    background-image: url('./images/titlescreen_background.png');
+}
+.gameLogo {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+.gameLogo img{
+ height: 400px;
+ width: 800px;
+}
