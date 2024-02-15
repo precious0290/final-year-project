@@ -4,9 +4,30 @@ html {
   /*Changed the background colour*/
   body {
    background-image: url('../images/main_background.png');
-   background-position: center;
+   background-size: cover;
+  }
+  #header {
+    transition: all 0.5s;
+    z-index: 997;
+    padding:0px;
   }
   
+  #header .logo {
+    font-size: 28px;
+    padding: 0;
+    line-height: 1;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+  
+  #header .logo img {
+    max-height: 40px;
+  }
+  
+  #header .gameLogo img {
+    max-width: 250px;
+    max-height: 150px;
+  }
   .container {
     position: absolute;
     left: 50%;
