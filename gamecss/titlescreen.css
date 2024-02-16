@@ -6,10 +6,30 @@ body {
 body a{
     text-decoration: none;
 }
+#titlelink:hover{
+    color: rgb(16, 7, 143);
+}
+#titlelink:link{
+    color: rgb(9, 192, 116);
+}
+#titlelink:active{
+    color: hotpink;
+}
+#titlelink:visited{
+    color: paleturquoise;
+}
+
 .container {
     top: 50%;
     left: 50%;
     padding: 5% 5%; 
+}
+.titleTextContainer{
+    position: relative;
+    left: 25%;
+    max-width: 800px;
+    max-height: 800px;
+    word-wrap: break-word;
 }
 
 .titlescreen {
@@ -31,18 +51,7 @@ body a{
  height: 400px;
  width: 800px;
 }
-#titlelink a:hover{
-    color: rgb(16, 7, 143);
-}
-#titlelink a:link{
-    color: rgb(9, 192, 116);
-}
-#titlelink a:active{
-    color: hotpink;
-}
-#titlelink a:visited{
-    color: paleturquoise;
-}
+
 /* 
 https://www.w3schools.com/howto/howto_css_image_text.asp
 

@@ -125,7 +125,7 @@ function playerTakeTurn() {
     $('.square').off();
   });
 }
-
+console.log("liveboard:"+ liveBoard);
 // In this function there is an ai take turn method so we can use that to  implement the mcts functionality based on what i was sent for the java script
 // Search
 //Expansion

@@ -63,7 +63,24 @@ body a{
   transform: translate(-50%, -50%);
   margin: 0;
   font-size: 48px;
-} 
+}
+.grid-item a{
+  text-decoration: none;
+}
+
+.grid-item a:link{
+  color: rgb(9, 192, 116);
+}
+.grid-item a:visited{
+  color: rgb(71, 193, 227);
+}
+.grid-item a:hover{
+  color: rgb(216, 135, 200);
+}
+.grid-item a:active{
+  color: rgb(174, 151, 242);
+}
+
 /* 
 
 */
