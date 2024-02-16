@@ -1,5 +1,6 @@
 body {
-    background-image: url('./images/titlescreen_background.png');
+    background-image: url('../images/titlescreen_background.png');
+    background-size: cover;
 }
 /*text-decoration: none removes the underline of the link */
 body a{
