@@ -36,6 +36,16 @@ html {
     top: 50%;
     transform: translate(-50%, -50%);
   }
+  .timer_container{
+    border-style: solid;
+    border-color: rgb(56, 229, 235);
+    border-radius: 8px;
+  }
+  .timer{
+    font-size: 48px;
+    font-weight: 700;
+    text-align: center;
+  }
   
   .clearfix:after {  
     content: "";
@@ -145,4 +155,18 @@ html {
   .button-area span:hover {
     cursor: pointer;
     background-color: hsla(30, 10%, 30%, 0.95);
+  }
+  .arrowscontainer{
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap:280%;  
+  }
+  footer{
+  position: fixed;
+   left: 0;
+   bottom: 0;
+  }
+  footer img{
+      height: 100px;
+      width: 150px;
   }

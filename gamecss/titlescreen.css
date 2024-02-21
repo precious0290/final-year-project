@@ -1,6 +1,11 @@
+*{
+    text-align: center;
+    overflow: hidden;
+}
 body {
     background-image: url('../images/titlescreen_background.png');
     background-size: cover;
+    
 }
 /*text-decoration: none removes the underline of the link */
 body a{
@@ -25,20 +30,13 @@ body a{
     padding: 5% 5%; 
 }
 .titleTextContainer{
-    position: relative;
-    left: 25%;
     max-width: 800px;
     max-height: 800px;
-    word-wrap: break-word;
 }
 
 .titlescreen {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     font-size: 92px;
     font-weight: 700;
-    
 }
 .gameLogo {
     display: flex;
