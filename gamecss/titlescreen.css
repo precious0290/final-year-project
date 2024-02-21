@@ -27,11 +27,6 @@ body a{
 .container {
     top: 50%;
     left: 50%;
-    padding: 5% 5%; 
-}
-.titleTextContainer{
-    max-width: 800px;
-    max-height: 800px;
 }
 
 .titlescreen {
