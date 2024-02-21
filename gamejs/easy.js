@@ -1,6 +1,7 @@
 var cpuIcon = 'X';
 var playerIcon = 'O';
 var AIMove;
+
 //settings for liveBoard: 1 is cpuIcon, -1 is playerIcon, 0 is empty
 var liveBoard = [1, -1, -1, -1, 1, 1, 1, -1, -1];
 var winningLines = [
@@ -114,8 +115,17 @@ function playerTakeTurn() {
   });
 }
 
+function randomMove(){
+  var randMove = Math.floor(Math.random()*liveBoard.length);
+  if(liveBoard[randMove]== 'X' || liveBoard[randMove]== 'O'){
+    randMove = Math.floor(Math.random()*liveBoard.length);
+  }
+ AIMove = randMove;
+ return AIMove;
+}
 function aiTakeTurn() {
-  miniMax(liveBoard, 'aiPlayer');
+ // miniMax(liveBoard, 'aiPlayer');
+ randomMove();
   liveBoard[AIMove] = 1;
   renderBoard(liveBoard);
   if (checkVictory(liveBoard)) {
@@ -163,41 +173,7 @@ function availableMoves(board) {
   });
 }
 
-//AI
-//minimax algorithm - explanation here: http://http://neverstopbuilding.com/minimax
-function miniMax(state, player) {
-  //base cases: check for an end state and if met - return the score from the perspective of the AI player.  
-  var rv = checkVictory(state);
-  if (rv === 'win') {
-    return 10;
-  }
-  if (rv === 'lose') {
-    return -10;
-  }
-  if (rv === 'draw') {
-    return 0;
-  }
 
-  var moves = [];
-  var scores = [];
-  //for each of the available squares: recursively make moves and push the score + accompanying move to the moves + scores array
-  availableMoves(state).forEach(function(square) {
-    state[square] = (player === 'aiPlayer') ? 1 : -1;
-    scores.push(miniMax(state, (player === 'aiPlayer') ? 'opponent' : 'aiPlayer'));
-    moves.push(square);
-    state[square] = 0;
-  });
-
-  //calculate and return the best score gathered from each of the available moves. track the best movein the AIMove variable
-
-  if (player === 'aiPlayer') {
-    AIMove = moves[scores.indexOf(Math.max.apply(Math, scores))];
-    return Math.max.apply(Math, scores);
-  } else {
-    AIMove = moves[scores.indexOf(Math.min.apply(Math, scores))];
-    return Math.min.apply(Math, scores);
-  }
-}
 
 renderBoard(liveBoard);
 chooseMarker();
