@@ -3,11 +3,6 @@
    <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta name="author" content="CodePel">
-      <title> Tic-Tac-Toe Example </title>
-      <!-- Style CSS -->
-      <link rel="stylesheet" href="./css/style.css">
-      <!-- Demo CSS (No need to include it into your project) -->
       <link rel="stylesheet" href="../gamecss/easy.css">
       <link href='https://fonts.googleapis.com/css?family=Raleway:400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
@@ -20,9 +15,11 @@
       <!--$%adsense%$-->
       <main class="cd__main">
 <div class="container">
+  <div class="gameLevel">Easy</div>
   <div class="timer_container">
-    <div class="timer" id="timing">00:00:00</div>
- </div>
+    <div class="timer" id="timing"><span class="hour">00</span>:<span class="minute">00</span>:<span class="second">00</span>
+    </div>
+   </div>
   <div class="board clearfix">
     <div class="row">
       <div class="square" id="0"></div>

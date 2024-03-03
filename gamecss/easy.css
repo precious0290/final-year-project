@@ -36,6 +36,12 @@ html {
     top: 50%;
     transform: translate(-50%, -50%);
   }
+  .gameLevel{
+    font-size: 48px;
+    font-weight: 700;
+    color: #8fe992;
+    text-align: center;
+  }
   .timer_container{
     border-style: solid;
     border-color: rgb(56, 229, 235);
@@ -159,8 +165,11 @@ html {
   .arrowscontainer{
     display: grid;
     grid-template-columns: auto auto;
-    grid-gap:280%;  
   }
+  #rightarrow{
+    position: fixed;
+    right:0;
+    }
   footer{
   position: fixed;
    left: 0;

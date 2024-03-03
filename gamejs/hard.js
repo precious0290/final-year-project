@@ -16,7 +16,49 @@ var winningLines = [
   [2, 4, 6]
 ];
 const cellElements = document.querySelectorAll('[data-cell]');
-
+var time = 0;
+let interval;
+const hours = document.querySelector('.hour');
+const minutes = document.querySelector('.minute');
+const seconds = document.querySelector('.second');
+var gameStarted = false;
+class Tree{
+  //nodes representing: child, parent, termination ? , visits ?, score ? ??
+   gameboard;
+   is_terminal;
+   is_fully_expanded;
+   parentNode;
+   numvisits;
+   score;
+   children;
+    constructor(gameboard,parentNode)
+    {
+            this.gameboard = gameboard;
+          if ((checkVictory(gameboard) == "win") || (checkVictory(gameboard) == "draw")) {
+             this.is_terminal = true;
+          }
+          else{
+            this.is_terminal = false;
+          }
+              
+  
+         this.is_fully_expanded = this.is_terminal; //shows the expanded state of the nodde
+          //initialise parent
+          this.parentNode = parentNode;
+  
+          //initialise number of nodes visited
+         this.numvisits = 0;
+  
+          //initialise total score of node
+          this.score = 0;
+  
+          //initialise current node's children
+          this.children = {};
+    }
+  getLiveboard(){
+    return this.gameboard;
+  }
+  }
 
 
 
@@ -74,6 +116,8 @@ function chooseMarker() {
 }
 
 function endGameMessage(){
+  gameStarted == true;
+  timerState(gameStarted);
   var result = checkVictory(liveBoard);
   $('.end-game-modal h3').text(result === "win" ? 'You Lost' : "It's a draw");
   
@@ -102,9 +146,20 @@ function startNewGame() {
 
   //chooseMarker();
   //chooseDifficulty();
+  gameStarted == true;
+  timerState(gameStarted);
   playerTakeTurn();
  // chooseMarker();
 }
+function timerState(gameStarted){
+  if(gameStarted == true){
+    clearTimer();
+    startTimer();
+  }
+  else{
+    stopTimer();
+  }
+} 
 function playerTakeTurn() {
   $('.square:empty').hover(function() {
     $(this).text(playerIcon).css('cursor', 'pointer');
@@ -147,6 +202,34 @@ function aiTakeTurn() {
   }
 }
 }
+function startTimer(){
+  incrementTimer();
+  interval = setInterval(incrementTimer, 1000);
+ }
+ function stopTimer(){
+   time = 0;
+  clearInterval(interval);
+ }
+ function clearTimer(){
+   hours.innerHTML = '00';
+   minutes.innerHTML ='00';
+   seconds.innerHTML = '00';
+ }
+ function incrementTimer(){
+   time++;
+ 
+   var second = time % 60;
+   var minute = Math.floor(time / 60) % 60;
+   var hour = Math.floor(time / 3600) % 60;
+   
+   second = (second < 10) ? '0'+second : second;
+   minute = (minute < 10) ? '0'+minute : minute;
+   hour = (hour < 10) ? '0'+hour : hour;
+   
+   hours.innerHTML = hour;
+   minutes.innerHTML = minute;
+   seconds.innerHTML = second;
+ }
 //change how checkVictory logic finds win/loss in code for the MCTS function
 //UTILITIES
 function checkVictory(board) {
@@ -234,48 +317,12 @@ function availableMoves(board) {
   }
 }
 */
-class Tree{
-  //nodes representing: child, parent, termination ? , visits ?, score ? ??
-   gameboard;
-   is_terminal;
-   is_fully_expanded;
-   parentNode;
-   numvisits;
-   score;
-   children;
-    constructor(gameboard,parentNode)
-    {
-            this.gameboard = gameboard;
-          if ((checkVictory(gameboard) == "win") || (checkVictory(gameboard) == "draw")) {
-             this.is_terminal = true;
-          }
-          else{
-            this.is_terminal = false;
-          }
-              
-  
-         this.is_fully_expanded = this.is_terminal; //shows the expanded state of the nodde
-          //initialise parent
-          this.parentNode = parentNode;
-  
-          //initialise number of nodes visited
-         this.numvisits = 0;
-  
-          //initialise total score of node
-          this.score = 0;
-  
-          //initialise current node's children
-          this.children = {};
-    }
-  getLiveboard(){
-    return this.gameboard;
-  }
-  }
+
   //MCTS Attempt -> chatgpt provided me with helpful suggestions and debug handling still having problems
- var rootNodeExplorer = new Tree(liveBoard, this); //class Tree object
+ 
   //Selection
 function Selection(liveBoard){
- 
+ var rootNodeExplorer = new Tree(liveBoard, this); //class Tree object
   var iterations = 1000; //number of iterations for the for loop, most people seem to ue 1000
 //looping the actions of expanding the tree, simulating the game, performing backpropagation and UCT and returning the selected move
   for(var i = 0; i < iterations;i++){

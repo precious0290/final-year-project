@@ -13,7 +13,12 @@ var winningLines = [
   [0, 4, 8],
   [2, 4, 6]
 ];
-
+var time = 0;
+let interval;
+const hours = document.querySelector('.hour');
+const minutes = document.querySelector('.minute');
+const seconds = document.querySelector('.second');
+var gameStarted = false;
 //UI
 function renderBoard(board) {
   board.forEach(function(el, i) {
@@ -63,9 +68,12 @@ function chooseMarker() {
     
     $('.button-area span').off();
   });
+
 }
 
 function endGameMessage(){
+  gameStarted = false;
+  timerState(gameStarted);
   var result = checkVictory(liveBoard);
   $('.end-game-modal h3').text(result === 'win' ? 'You Lost' : "It's a draw");
   
@@ -90,9 +98,20 @@ function startNewGame() {
   liveBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   $('.square').text("").removeClass('o-marker x-marker');
   renderBoard(liveBoard);
+  gameStarted = true;
+  timerState(gameStarted);
   playerTakeTurn();
 }
 
+function timerState(gameStarted){
+  if(gameStarted == true){
+    clearTimer();
+    startTimer();
+  }
+  else{
+    stopTimer();
+  }
+} 
 function playerTakeTurn() {
   $('.square:empty').hover(function() {
     $(this).text(playerIcon).css('cursor', 'pointer');
@@ -125,6 +144,40 @@ function aiTakeTurn() {
     playerTakeTurn();
   }
 }
+
+function startTimer(){
+ incrementTimer();
+ interval = setInterval(incrementTimer, 1000);
+}
+function stopTimer(){
+  time = 0;
+ clearInterval(interval);
+}
+function clearTimer(){
+  hours.innerHTML = '00';
+  minutes.innerHTML ='00';
+  seconds.innerHTML = '00';
+}
+function incrementTimer(){
+  time++;
+
+  var second = time % 60;
+  var minute = Math.floor(time / 60) % 60;
+  var hour = Math.floor(time / 3600) % 60;
+  
+  second = (second < 10) ? '0'+second : second;
+  minute = (minute < 10) ? '0'+minute : minute;
+  hour = (hour < 10) ? '0'+hour : hour;
+  
+  hours.innerHTML = hour;
+  minutes.innerHTML = minute;
+  seconds.innerHTML = second;
+}
+
+//var interval = setInterval(incrementTimer,1000); //1000 miliseconds == 1 second
+
+
+
 
 //UTILITIES
 function checkVictory(board) {
