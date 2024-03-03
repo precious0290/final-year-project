@@ -116,7 +116,7 @@ function chooseMarker() {
 }
 
 function endGameMessage(){
-  gameStarted == true;
+  gameStarted = false;
   timerState(gameStarted);
   var result = checkVictory(liveBoard);
   var wintext = "";
@@ -150,15 +150,10 @@ function endGameMessage(){
 function startNewGame() {
   liveBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   $('.square').text("").removeClass('o-marker x-marker');
-  //renderProperties();
   renderBoard(liveBoard);
-
-  //chooseMarker();
-  //chooseDifficulty();
-  gameStarted == true;
+  gameStarted = true;
   timerState(gameStarted);
   playerTakeTurn();
- // chooseMarker();
 }
 function timerState(gameStarted){
   if(gameStarted == true){
@@ -198,7 +193,7 @@ console.log("liveboard:"+ liveBoard);
 function aiTakeTurn() {
   //call mcts here
  //const mctsPlayer = new MCTS(liveBoard, cpuIcon,AIMove);
-  AIMove = Selection(liveBoard);
+Selection(liveBoard);
  //miniMax(liveBoard, 'aiPlayer');
  if(AIMove !== undefined) { 
   liveBoard[AIMove] = 1;
