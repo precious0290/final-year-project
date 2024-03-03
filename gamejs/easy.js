@@ -146,10 +146,13 @@ function playerTakeTurn() {
 function randomMove(liveBoard){
   //var randMove = Math.floor(Math.random()*liveBoard.length);
  var emptySpaces = availableMoves(liveBoard);
- randMove =(Math.floor(Math.random()*(emptySpaces.length))) % emptySpaces.length;
- AIMove = randMove;
+ if(emptySpaces.length > 0){
+   randMove =(Math.floor(Math.random()*(emptySpaces.length))) % emptySpaces.length;
+   AIMove = emptySpaces[randMove];
+ }else{
+  AIMove = -1;
+ }
  return AIMove;
-
 }
 function aiTakeTurn() {
  // miniMax(liveBoard, 'aiPlayer');
