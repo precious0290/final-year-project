@@ -119,7 +119,16 @@ function endGameMessage(){
   gameStarted == true;
   timerState(gameStarted);
   var result = checkVictory(liveBoard);
-  $('.end-game-modal h3').text(result === "win" ? 'You Lost' : "It's a draw");
+  var wintext = "";
+  if(result == 'win'){
+    wintext = "You lose!";
+  }else if(result == 'lose'){
+    wintext = "You win!";
+  }
+  else if(result == 'draw'){
+    wintext = "It's a draw!";
+  }
+  $('.end-game-modal h3').text(wintext);
   
   $('.modal-container').css('display', 'block');
   $('.end-game-modal').css('display','block').removeClass('animated bounceOutDown').addClass('animated bounceInUp');
