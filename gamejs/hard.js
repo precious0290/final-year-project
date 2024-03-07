@@ -23,14 +23,6 @@ const minutes = document.querySelector('.minute');
 const seconds = document.querySelector('.second');
 var gameStarted = false;
 class Tree{
-  //nodes representing: child, parent, termination ? , visits ?, score ? ??
-   gameboard;
-   is_terminal;
-   is_fully_expanded;
-   parentNode;
-   numvisits;
-   score;
-   children;
     constructor(gameboard,parentNode)
     {
             this.gameboard = gameboard;
@@ -55,11 +47,170 @@ class Tree{
           //initialise current node's children
           this.children = {};
     }
-  getLiveboard(){
+  get Liveboard(){
     return this.gameboard;
   }
+  set NumVisits(numvisits){
+    this.numvisits = numvisits;
   }
+  get NumVisits(){
+    return this.numvisits;
+  }
+  
+  set Score(value){
+    this.score = value;
+  }
+  get Score(){
+    return this.score;
+  }
+   addChild(childIdentifier, ChildNode){
+    this.children[childKey] = childIdentifier;
+   }
+  }
+  //MCTS Attempt -> chatgpt provided me with helpful suggestions and debug handling still having problems
+ 
+  //Selection
+  function Selection(liveBoard){
+    var rootNodeExplorer = new Tree(liveBoard, this); //class Tree object
+     var iterations = 1000; //number of iterations for the for loop, most people seem to ue 1000
+   //looping the actions of expanding the tree, simulating the game, performing backpropagation and UCT and returning the selected move
+     for(var i = 0; i < iterations;i++){
+       var explorerNode = rootNodeExplorer;
+       explorerNode = Expansion(explorerNode);
+       var score = Simulation(explorerNode);
+       Backpropagation(score, explorerNode);
+       AIMove = UCT(explorerNode);
+     }
+     return AIMove;
+   }
+   //Expansion deals with finding a node that is not a terminal node in order to explore potential moves
+   //for the AI player
+   //If the tree is fully expanded/node is terminal the node is returned else child nodes is returned
+   function Expansion(explorerNode){
+     if(explorerNode.is_terminal == true){
+         return explorerNode;
+     }
+     else{
+       var unexploredMoves = getUnexploredNode(explorerNode);
+       if(unexploredMoves.length > 0){
+         var moves = unexploredMoves[Math.floor(Math.random()*unexploredMoves.length)];
+         var child = expandNode(explorerNode, moves);
+         updateNodeExpansionStatus(explorerNode);
+         return child;
+       }
+       else{
+         explorerNode.is_fully_expanded = true;
+         return explorerNode;
+       }
+     }
+   }
+   
+   function getUnexploredNode(explorerNode)
+   {
+     var possibleNodes = availableMoves(explorerNode.Liveboard);
+     var exploredNodes = Object.keys(explorerNode.children).map(Number); //Number changes the string representation of the board to numbers
+     return possibleNodes.filter(move => !exploredNodes.includes(move));
+   }
+   function expandNode(explorerNode, move){
+     var newBoard = explorerNode.Liveboard.map((x) => x);
+     newBoard[move] = getCurrentPlayer(newBoard);
+     var childNode = new Tree(newBoard, explorerNode);
+     explorerNode.children[move] = childNode;
+     return childNode;
+   }
+   function getCurrentPlayer(board) {
+     // Count 'X's and 'O's on the board
+     var xCount = board.filter(cell => cell === 'X').length;
+     var oCount = board.filter(cell => cell === 'O').length;
+   
+     // Determine the current player
+     if (xCount > oCount) {
+         return 'O'; // 'O's turn
+     } else {
+         return 'X'; // 'X's turn
+     }
+   }
+   function updateNodeExpansionStatus(explorerNode){
+     var unexploredMoves = getUnexploredNode(explorerNode);
+     if(unexploredMoves.length === 0){
+       explorerNode.is_fully_expanded = true;
+     }
+   }
+   function Simulation(explorerNode){
+     //playgame state between the selected node and returning the score of the complete game
+     
+     console.log('explorer.gameboard:', explorerNode.Liveboard);
+     var tempBoard = explorerNode.Liveboard.map((x) => x);
+     var player1 = playerIcon;
+     var player2 = cpuIcon;
+     var currentPlayer = player1;
+   
+     if(!Array.isArray(explorerNode.Liveboard)){
+       console.log("tempboard not iterable");
+       return;
+     }
+     
+     while(true){
+       var movesAvailable = availableMoves(tempBoard);
+       if((movesAvailable.length === 0) || (checkVictory(tempBoard))){
+         break;
+     }
+     else{
+       var move = movesAvailable[Math.floor(Math.random() * movesAvailable.length)];
+       tempBoard[move] = currentPlayer;
+       currentPlayer = (currentPlayer === player1) ? player2 : player1;  
+     }
+     
+     var gameResult = checkVictory(tempBoard);
+       if(gameResult === 'win'){
+         return -1; //if player wins return -1
+       }
+       else if(gameResult === 'lose'){
+         return 1; // if AI wins return 1
+       }
+       else{
+         return 0; //If draw return 0
+       }
+    
+   }
+     
+     /* 
+     if(player2 wins){
+   
+       return 1;
+     }
+     else if(player1 wins){
+       return -1;
+     }
+     else{
+       return 0;
+     }
+     
+     */
+   }
+   function Backpropagation(score, explorerNode){
 
+     while(explorerNode !== null){  
+      var currentVisits = explorerNode.NumVisits;
+      var currentScore = explorerNode.Score;
+
+       explorerNode.NumVisits = currentVisits + 1 ; //+1 for node visited
+       explorerNode.Score = currentScore + score; //add the score of simulation result
+       
+       explorerNode = explorerNode.parentNode; //explorer node becomes the parent
+     }
+     
+   } 
+   //UCT implementation with the formula
+   function UCT(explorerNode){
+     var constNode = Math.sqrt(2);
+     if(explorerNode.NumVisits == 0){
+       return Infinity;
+     }
+     return Math.floor((explorerNode.score/explorerNode.NumVisits()) + constNode * Math.sqrt(Math.log(explorerNode.parentNode.NumVisits())/ explorerNode.NumVisits()));
+     //Math Formula -? wins/visits + constant * sqrt(log Parent visits/ visits)
+   }
+     
 
 
 
@@ -193,7 +344,7 @@ console.log("liveboard:"+ liveBoard);
 function aiTakeTurn() {
   //call mcts here
  //const mctsPlayer = new MCTS(liveBoard, cpuIcon,AIMove);
-Selection(liveBoard);
+Selection(liveBoard,0);
  //miniMax(liveBoard, 'aiPlayer');
  if(AIMove !== undefined) { 
   liveBoard[AIMove] = 1;
@@ -237,42 +388,29 @@ function startTimer(){
 //change how checkVictory logic finds win/loss in code for the MCTS function
 //UTILITIES
 function checkVictory(board) {
+  var squaresInPlay = board.reduce(function(prev, cur) {
+    return Math.abs(prev) + Math.abs(cur);
+  });
 
-var outcome = '';
- // console.log("board length: " + board.length);
-  /* 
-    1. Loop through board state elements
-    1.1 -> How to loop through board state elements ?
-    1.2  -> how to check for consecutive state elements in board state
-    1.3 -> Is there a better method to check for consecutive state elements in board state
+  var outcome = winningLines.map(function(winLines) {
+    return winLines.map(function(winLine) {
+      return board[winLine];
+    }).reduce(function(prev, cur) {
+      return prev + cur;
+    });
+  }).filter(function(winLineTotal) {
+    return Math.abs(winLineTotal) === 3;
+  });
 
-    2. return the outcome of the loop -> win/loss, draw
-    2.1 -> draw is when there is no win/lose
-    2.2 -> win/loss is when there is 3 consecutive state elements 
-    */
-
-  for(var line of winningLines){
-    var [a, b, c] = line;
-    if(board[a] && board[a] === board[b] && board[a] === board[c]){
-      outcome = cpuIcon ? cpuIcon : playerIcon;
-    }
-  }
-  if(board.every(cell => cell !== 0)){
-    outcome = "draw";
-  }
-   else if(outcome === cpuIcon){
-    return "win";
-
-   }
-   else if(outcome === playerIcon){
-    return "loss";
-   }
-   else if(outcome === "draw"){
-    return "draw";
-   }
-   else{
+  if (outcome[0] === 3) {
+    return 'win';
+  } else if (outcome[0] === -3) {
+    return 'lose';
+  } else if (squaresInPlay === 9) {
+    return 'draw';
+  } else {
     return false;
-   }
+  }
 }
 
 function availableMoves(board) {
@@ -322,145 +460,7 @@ function availableMoves(board) {
 }
 */
 
-  //MCTS Attempt -> chatgpt provided me with helpful suggestions and debug handling still having problems
- 
-  //Selection
-function Selection(liveBoard){
- var rootNodeExplorer = new Tree(liveBoard, this); //class Tree object
-  var iterations = 1000; //number of iterations for the for loop, most people seem to ue 1000
-//looping the actions of expanding the tree, simulating the game, performing backpropagation and UCT and returning the selected move
-  for(var i = 0; i < iterations;i++){
-    var explorerNode = rootNodeExplorer;
-    explorerNode = Expansion(explorerNode);
-    var score = Simulation(explorerNode);
-    var backpropresult = Backpropagation(score, explorerNode);
-    AIMove = UCT(backpropresult, explorerNode);
-  }
-  return AIMove;
-}
-//Expansion deals with finding a node that is not a terminal node in order to explore potential moves
-//for the AI player
-//If the tree is fully expanded/node is terminal the node is returned else child nodes is returned
-function Expansion(explorerNode){
-  if(explorerNode.is_terminal == true){
-      return explorerNode;
-  }
-  else{
-    var unexploredMoves = getUnexploredNode(explorerNode);
-    if(unexploredMoves.length > 0){
-      var moves = unexploredMoves[Math.floor(Math.random()*unexploredMoves.length)];
-      var child = expandNode(explorerNode, moves);
-      updateNodeExpansionStatus(explorerNode);
-      return child;
-    }
-    else{
-      explorerNode.is_fully_expanded = true;
-      return explorerNode;
-    }
-  }
-}
 
-function getUnexploredNode(explorerNode)
-{
-  var possibleNodes = availableMoves(explorerNode.gameboard);
-  var exploredNodes = Object.keys(explorerNode.children).map(Number); //Number changes the string representation of the board to numbers
-  return possibleNodes.filter(move => !exploredNodes.includes(move));
-}
-function expandNode(explorerNode, move){
-  var newBoard = explorerNode.gameboard.map((x) => x);
-  newBoard[move] = getCurrentPlayer(newBoard);
-  var childNode = new Tree(newBoard, explorerNode);
-  explorerNode.children[move] = childNode;
-  return childNode;
-}
-function getCurrentPlayer(board) {
-  // Count 'X's and 'O's on the board
-  var xCount = board.filter(cell => cell === 'X').length;
-  var oCount = board.filter(cell => cell === 'O').length;
-
-  // Determine the current player
-  if (xCount > oCount) {
-      return 'O'; // 'O's turn
-  } else {
-      return 'X'; // 'X's turn
-  }
-}
-function updateNodeExpansionStatus(explorerNode){
-  var unexploredMoves = getUnexploredNode(explorerNode);
-  if(unexploredMoves.length === 0){
-    explorerNode.is_fully_expanded = true;
-  }
-}
-function Simulation(explorerNode){
-  //playgame state between the selected node and returning the score of the complete game
-  
-  console.log('explorer.gameboard:', explorerNode.gameboard);
-  var tempBoard = explorerNode.gameboard.map((x) => x);
-  var player1 = playerIcon;
-  var player2 = cpuIcon;
-  var currentPlayer = player1;
-
-  if(!Array.isArray(explorerNode.gameboard)){
-    console.log("tempboard not iterable");
-    return;
-  }
-  
-  while(true){
-    var movesAvailable = availableMoves(tempBoard);
-    if((movesAvailable.length === 0) || (checkVictory(tempBoard))){
-      break;
-  }
-  else{
-    var move = movesAvailable[Math.floor(Math.random() * movesAvailable.length)];
-    tempBoard[move] = currentPlayer;
-    currentPlayer = (currentPlayer === player1) ? player2 : player1;  
-  }
-  
-  var gameResult = checkVictory(tempBoard);
-    if(gameResult === 'win' && currentPlayer === player1){
-      return -1; //if player wins return -1
-    }
-    else if(gameResult === 'win' && currentPlayer === player2){
-      return 1; // if AI wins return 1
-    }
-    else{
-      return 0; //If draw return 0
-    }
- 
-}
-  
-  /* 
-  if(player2 wins){
-
-    return 1;
-  }
-  else if(player1 wins){
-    return -1;
-  }
-  else{
-    return 0;
-  }
-  
-  */
-}
-function Backpropagation(score, explorerNode){
-  while(explorerNode !== null){    
-    explorerNode.numvisits += 1; //+1 for node visited
-    explorerNode.score += score; //add the score of simulation result
-    explorerNode = explorerNode.parentNode; //explorer node becomes the parent
-  }
-  
-} 
-//UCT implementation with the formula
-function UCT(backpropresult, explorerNode){
-  var constNode = Math.sqrt(2);
-  if(explorerNode.numvisits == 0){
-    return Infinity;
-  }
-  return Math.floor((explorerNode.score/explorerNode.numvisits) + constNode * Math.sqrt(Math.log(explorerNode.parentNode.numvisits)/ explorerNode.numvisits));
-  //Math Formula -? wins/visits + constant * sqrt(log Parent visits/ visits)
-}
-  
   
       
   
