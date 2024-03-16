@@ -121,6 +121,20 @@ class Tree{
      return possibleNodes.filter(move => !exploredNodes.includes(move));
    }
    function expandNode(explorerNode, move){
+
+    var boardStates = availableMoves(explorerNode.Liveboard);
+    var newNodeFound;
+    for(var i = 0; i < boardStates.length; i++){
+      if(!explorerNode.getChildren.includes(boardStates[i])){
+          newNodeFound = new Tree(explorerNode.Liveboard, explorerNode);
+          explorerNode.addChild = explorerNode.children.push(newNodeFound);
+
+          if(boardStates.length == explorerNode.getChildrenLength){
+            explorerNode.is_fully_expanded = true;
+          }
+      }
+      return newNodeFound;
+    }
      var newBoard = explorerNode.Liveboard.map((x) => x);
      console.log("newBoard: " + newBoard);
      newBoard[move] = getCurrentPlayer(newBoard);
