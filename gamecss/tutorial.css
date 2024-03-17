@@ -29,8 +29,48 @@ html {
     max-width: 250px;
     max-height: 150px;
   }
-  
-  
+  /* lines 32 - 73 organise the design elements of the ai containers displaying the icon that they are*/
+  .aiGameContainer{
+    display: grid;
+    grid-template-columns: auto auto;
+  }
+  .aiDisplay{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #randAI{
+    position: fixed;
+    padding-left: 10%;
+    bottom:50%;
+    left:0;
+  }
+ #miniMaxAI{
+    position: fixed;
+    padding-right: 10%;
+    bottom:50%;
+    right:0;
+  }
+  .aiName{
+    font-size: 32px;
+    font-weight: 900;
+    color: black;
+    text-align: center;
+  }
+  .aiSymbol{  
+    border-style: solid;
+    border-radius: 8px;
+    border-color: black;
+    text-align: center;
+    font-size: 96px;
+    font-weight: 900;
+  }
+  #rand{
+    color:#e4671f ;
+  }
+  #mini{
+    color:#081747;
+  }
   .container {
     position: absolute;
     left: 50%;
@@ -40,7 +80,7 @@ html {
   .gameLevel{
     font-size: 48px;
     font-weight: 700;
-    color: yellow;
+    color: #e4671f;
     text-align: center;
   }
   .timer_container{
@@ -106,11 +146,11 @@ html {
   }
   
   .x-marker {
-    color: #eeda76;
+    color: #081747;
   }
   
   .o-marker {
-    color: #39abd9;
+    color: #e4671f;
   }
   
   
@@ -151,53 +191,25 @@ html {
     font-size: 1.3em;
     padding: 0.2em 0.4em;
   }
-  .button {
-    display: inline-block;
-    padding: 15px 25px;
-    font-size: 24px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    outline: none;
-    color: #fff;
-    background-color: #04AA6D;
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 9px #999;
-  }
-  
-  .button:hover {background-color: #3e8e41}
-  
-  .button:active {
-    background-color: #3e8e41;
-    box-shadow: 0 5px #666;
-    transform: translateY(4px);
-  }
-  
-  .button-area span {
-    display: inline-block;
-    background-color: hsla(30, 10%, 20%, 0.95);
-    margin: 0.2em 0.2em 0 0.2em;
-  }
-  
   .button-area span:hover {
     cursor: pointer;
     background-color: hsla(30, 10%, 30%, 0.95);
   }
-  .arrowscontainer{
-    display: grid;
-    grid-template-columns: auto auto;
+
+  .start-button-container {
+    text-align: center;
+    margin: 20px 0;
   }
-  #rightarrow{
-  position: fixed;
-  right:0;
+  /* The following lines add style customisation to the start game button such as changing the colour when the user hovers to highlight it has been hovered*/
+  #startGameButton {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color:rgb(135, 241, 135);
+    color: black;
+    font-weight: bold;
+    border-radius: 8px;
   }
-  footer{
-  position: fixed;
-   left: 0;
-   bottom: 0;
-  }
-  footer img{
-      height: 100px;
-      width: 150px;
+  #startGameButton:hover {
+    background-color: aquamarine;
   }

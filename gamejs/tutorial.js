@@ -1,3 +1,8 @@
+/* This file acts as a Tutorial guide for the user to see what making random moves vs making decisive moves leads to. And to display
+    how well the MiniMax algorithm works against the Random AI
+*/
+
+
 var cpuIcon = 'X';
 var playerIcon = 'O';
 var currentPlayer = 'random';
@@ -44,17 +49,8 @@ function animateWinLine() {
       return prev + cur;
     });
   });
-  var squaresToAnimate = winningLines[idxOfArray.indexOf(Math.abs(3))];
-  
-  squaresToAnimate.forEach(function(el) {
-      $('#' + el).fadeIn(200).fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200).fadeIn(200).fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200);
-    });
 }
 
-//MODALS
-function chooseMarker() {
-  startNewGame();
-}
 
 
 
@@ -107,7 +103,8 @@ function timerState(gameStarted){
   else{
     stopTimer();
   }
-} 
+}
+//function uses the avalable moves to determine which empty spaces it can place moves on 
 function randomMove(liveBoard){
     //var randMove = Math.floor(Math.random()*liveBoard.length);
    var emptySpaces = availableMoves(liveBoard);
@@ -132,10 +129,12 @@ function aiTutorial() {
             randomMove(liveBoard);
             liveBoard[RandMove] = currentPlayer === 'random' ? -1 : 1;
             currentPlayer = 'minimax'; // Switch to the other AI
+            console.log('Random' + RandMove);
         } else {
             miniMax(liveBoard, 'aiPlayer');
             liveBoard[AIMove] = currentPlayer === 'random' ? -1 : 1;
             currentPlayer = 'random'; // Switch back to the Random AI
+            console.log('Minimax'+ AIMove);
         }
         renderBoard(liveBoard);
         setTimeout(aiTutorial, 500); // Continue the game loop after a short delay
@@ -202,7 +201,7 @@ function checkVictory(board) {
     return false;
   }
 }
-
+//returns an array of available moves [empty spaces]
 function availableMoves(board) {
   return board.map(function(el, i) {
     if (!el) {
@@ -248,6 +247,17 @@ function miniMax(state, player) {
     return Math.min.apply(Math, scores);
   }
 }
-
+//setTimeout(startNewGame, 1000);
+//DOMContentLoaded means when the full js and html files have been loaded up properly, the function will then allow the user to click the button and start the game
 renderBoard(liveBoard);
-chooseMarker();
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('startGameButton').addEventListener('click', function() {
+      startNewGame(); // This function starts the game
+
+      this.style.display = "none";
+    });
+  });
+
+//MODALS
+
+  
