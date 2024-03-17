@@ -29,19 +29,65 @@ body a{
   max-width: 250px;
   max-height: 150px;
 }
+.container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .helptext{
-  border-style: outset;
-  border-width: 20%;
+  display: flexbox;
+  justify-content: center;
+  align-items: center;
+  border-style: solid;
+  border-radius: 8px;
+  border-width: 10%;
   text-align: center;
   font-weight: 700;
+  width:50%;
+  background-color: rgba(255, 255, 255, 0.25);
+  /*rgba is responsible for decreasing/increasing opacity on colours*/
 }
 h1{
+  display: inline;
   font-size: 56px;
 }
 p{
+  display: inline;
   font-size: 32px;
   word-wrap: break-word;
 }
+.start-button-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+#playGameButton{
+  padding: 10px 20px;
+  font-size: 32px;
+  cursor: pointer;
+  background-color:rgb(44, 92, 226);
+  color: black;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+#playGameButton:hover{
+  background-color: #79d5f1;
+}
+#tutorialButton{
+  padding: 10px 20px;
+  font-size: 32px;
+  cursor: pointer;
+  background-color:rgb(20, 197, 73);
+  color: black;
+  font-weight: bold;
+  border-radius: 8px;
+}
+#tutorialButton:hover{
+  background-color: rgb(94, 204, 238);
+}
+
+
 @media only screen and (max-width: 1280px) {
   body {
       background-image: url('../images/main_background.png');

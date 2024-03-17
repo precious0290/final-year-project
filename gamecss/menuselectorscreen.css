@@ -38,6 +38,12 @@ body a{
   top: 50%;
   left: 50%;
 }
+#menuText{
+  text-align: center;
+  font-size: 56px;
+  font-weight: bold;
+  color: rgba(108, 238, 141, 0.877);
+}
 .menurow{
   display: grid;
   grid-template-columns: auto;

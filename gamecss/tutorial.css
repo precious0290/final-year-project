@@ -213,3 +213,16 @@ html {
   #startGameButton:hover {
     background-color: aquamarine;
   }
+  #playGameButton{
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color:rgb(44, 92, 226);
+    color: black;
+    font-weight: bold;
+    border-radius: 8px;
+  }
+
+  #playGameButton:hover{
+    background-color: #79d5f1;
+  }

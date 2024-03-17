@@ -1,6 +1,7 @@
 *{
     text-align: center;
     overflow: hidden;
+    font-size: 48px;
 }
 body {
     background-image: url('../images/titlescreen_background.png');
@@ -23,28 +24,37 @@ body a{
 #titlelink:visited{
     color: paleturquoise;
 }
-
+.positionContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10%;
+}
 .container {
-    top: 50%;
+    bottom: 50%;
     left: 50%;
 }
 
-.titlescreen {
-    font-size: 92px;
-    font-weight: 700;
-    
-}
-.gameLogo {
-    display: flex;
+
+.gameLogoText {
+    display: grid;
+    grid-template-columns: auto;
+    grid-gap: 10px 1px;
     justify-content: center;
     align-items: center;
     
 }
 
-.gameLogo img{
+.gameLogoText img{
  height: 400px;
  width: 800px;
 }
+#gameLogo {
+    display: flex;
+    justify-content:center ;
+    align-items: center;
+}
+
 
 /* 
 https://www.w3schools.com/howto/howto_css_image_text.asp
