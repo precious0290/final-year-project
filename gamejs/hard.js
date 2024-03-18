@@ -79,8 +79,9 @@ class Tree{
   function Selection(liveBoard){
     var rootNodeExplorer = new Tree(liveBoard, this); //class Tree object
     var iterations = availableMoves(liveBoard).length;
-     //var iterations = 8; //number of iterations for the for loop, most people seem to ue 1000
-   //looping the actions of expanding the tree, simulating the game, performing backpropagation and UCT and returning the selected move
+     //var iterations = 8; //number of iterations for the for loop, most people seem to use 1000
+   //looping the actions of expanding the tree, 
+   //simulating the game, performing backpropagation and UCT and returning the selected move
      for(var i = 0; i < iterations;i++){
        var explorerNode = rootNodeExplorer;
        explorerNode = Expansion(explorerNode);
