@@ -81,7 +81,8 @@ class Tree{
     var iterations = availableMoves(liveBoard).length;
      //var iterations = 8; //number of iterations for the for loop, most people seem to use 1000
    //looping the actions of expanding the tree, 
-   //simulating the game, performing backpropagation and UCT and returning the selected move
+   //simulating the game, performing backpropagation 
+   //and UCT and returning the selected move
      for(var i = 0; i < iterations;i++){
        var explorerNode = rootNodeExplorer;
        explorerNode = Expansion(explorerNode);
