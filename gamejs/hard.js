@@ -118,7 +118,7 @@ class Tree{
   //Selection
   function Selection(liveBoard){
     var rootNodeExplorer = new Tree(liveBoard, null); //class Tree object
-    var iterations = 10;
+    var iterations = 100;
     //availableMoves(liveBoard).length;
      //var iterations = 8; //number of iterations for the for loop, most people seem to use 1000
    //looping the actions of expanding the tree, 
@@ -128,14 +128,15 @@ class Tree{
        var explorerNode = rootNodeExplorer;
        explorerNode = Expansion(explorerNode);
        var simRuns = 0;
-       while(simRuns < 10){
+       while(simRuns < 25){
         var randChild = selectRandomChild(explorerNode);
         var score = Simulation(randChild);
       //console.log("Simulation score: " + score);
        Backpropagation(score, randChild);
        simRuns++; 
        }
-       AIMove = UCT(explorerNode);
+       const constNode =2* Math.sqrt(0.5);
+       AIMove = UCT(explorerNode, constNode);
      }
      return AIMove;
    }
@@ -311,6 +312,7 @@ class Tree{
      }
      explorerNode.is_fully_expanded = false;
    } */
+   var simCounter = 0;
    function Simulation(randChild){
      //playgame state between the selected node and returning the score of the complete game
      var winLines = [
@@ -355,7 +357,10 @@ class Tree{
      //console.log("made it Simulation");
    } 
    var gameResult = determineWinner(tempBoard,winLines,player1,player2);
-  // console.log("Game result: " + gameResult);
+   
+  //console.log("Sim Game result: " + gameResult + " " + simCounter);
+  simCounter = simCounter + 1;
+
        if(gameResult === 'AI'){
          return 1; //if AI wins return 1
        }
@@ -473,7 +478,7 @@ function Backpropagation(score, randChild) {
      
    }   */
    //UCT implementation with the formula
-   function UCT(explorerNode) {
+   function UCT(explorerNode, constNode) {
 
    // console.log("Explorer node Visits:" + explorerNode.NumVisits);
     // explorerNode.Children.NumVisits = Number.MAX_SAFE_INTEGER; // Avoid division by zero in UCT formula
@@ -482,11 +487,11 @@ function Backpropagation(score, randChild) {
     var moveFound = 0;
     let bestScore = Number.MIN_SAFE_INTEGER;
     let bestMoves = [];
-    const constNode = Math.sqrt(2);
+    
     var children;
     if(explorerNode instanceof Tree ) {
       children = explorerNode.Children;
-      console.log(children);
+      //console.log(children);
     }
     else{
         console.log("Explorer node is undefined or not a Tree instance");
@@ -496,46 +501,65 @@ function Backpropagation(score, randChild) {
     Object.keys(children).forEach(move => {
 
       //console.log("Does it get here at all ?");
+
       let childNode = children[move];
+      //console.log(childNode);
+      if(childNode.NumVisits == 0){
+        childNode.NumVisits = Number.MAX_SAFE_INTEGER;
+      }
+      else if(explorerNode.NumVisits == 0){
+          explorerNode.NumVisits = Number.MAX_SAFE_INTEGER;;
+      }
+      //var currentPlayerVal = 1;
+  
+      /*for(var val of childNode.Liveboard) {
+        if(val === -1){
+         currentPlayerVal += -1;
+        }
+        else if(val === 1){
+         currentPlayerVal += 1;
+        }
+        } */
+      //console.log("CurrentPlayerVal "+ currentPlayerVal);  
       const childVisit = childNode.NumVisits;
       const childScore = childNode.Score;
-      const scoreMean = childScore /childVisit;
-      console.log("Child Score: " + childScore);
-     console.log("Score Mean: " + scoreMean);
-      const parentsVisit = 2 * (Math.log(explorerNode.NumVisits));
-     console.log("Parents Visit: " + parentsVisit);
-      
-     console.log("Child Visit: " + childVisit);
+      const parentVisit = explorerNode.NumVisits;
+      const parentScore = explorerNode.Score;
+      const scoreMean = childScore /childVisit;    
+      //const scoreCalc = currentPlayerVal * scoreMean;
+      const parentsVisitCalc = 2 * (Math.log(parentVisit));
+      const explorationCalc = constNode * Math.sqrt(parentsVisitCalc/childVisit);
+   //console.log("Parents Visit Calc: " + parentsVisit);
+    //console.log("Child Score: " + childScore);
+   // console.log("Score Mean: " + scoreMean);
+  // console.log("Parent Visits"+parentVisit);
+  //console.log("Child Visit: " + childVisit);
   
-        let uctScore = (scoreMean) + (constNode) * (Math.sqrt(parentsVisit/childVisit));        
+        let uctScore = scoreMean + explorationCalc; 
+        //console.log("UctScore "+ uctScore);  
+           
           //console.log("UctScore: " + uctScore); 
         if (uctScore > bestScore) {
         bestScore = uctScore;
+        //console.log("Best Score: " + bestScore);
         bestMoves = [move]; // Reset bestMoves with the new best move
       } else if (uctScore === bestScore) {
         bestMoves.push(move); // Add move as equally good
       }
-            
+       
       
     });
   
     // Choose a move randomly from the best moves
+    console.log(bestMoves);
     if (bestMoves.length > 0) {
-      const randomIndex = Math.floor(Math.random() * bestMoves.length);  
+      const randomIndex = Math.floor(Math.random() * bestMoves.length); 
+     // var diffIndex = randomIndex + (Math.random() < 0.5 ? -1 : 1); //if Math.random() generates a value less than 0.5 then -1 will be returned else 1
+     // diffIndex = Math.max(0, Math.min(diffIndex, bestMoves.length - 1)); //playing around with adjusting the moves chosen
       moveFound = bestMoves[randomIndex];
-      console.log(moveFound);
+     // console.log(moveFound);
       return moveFound;
     }
-    //console.log("bestMoveFound: " + moveFound);
- /*   var emptySpaces = availableMoves(liveBoard);
-    var randMoveGiven;
- if(emptySpaces.length > 0){
-   randMove =(Math.floor(Math.random()*(emptySpaces.length))) % emptySpaces.length;
-  randMoveGiven = emptySpaces[randMove];
- }else{
-  randMoveGiven = -1;
- } */
-    //
     return  null; // returns random move from a list of available spaces until i get the implementation to work correctly.
   }
    /*
