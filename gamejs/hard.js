@@ -22,6 +22,7 @@ const hours = document.querySelector('.hour');
 const minutes = document.querySelector('.minute');
 const seconds = document.querySelector('.second');
 var gameStarted = false;
+//MCTS Structure taken from https://www.youtube.com/watch?v=-GRls60yRsQ&list=PLLfIBXQeu3aanwI5pYz6QyzYtnBEgcsZ8
 class Tree{
     constructor(gameboard,parentNode)
     {
@@ -47,9 +48,39 @@ class Tree{
           //initialise current node's children
           this.children = {};
     }
+    checkWinStatus(gameboard){
+      var squaresInPlay = board.reduce(function(prev, cur) {
+        return Math.abs(prev) + Math.abs(cur);
+      });
+    
+      var outcome = winningLines.map(function(winLines) {
+        return winLines.map(function(winLine) {
+          return board[winLine];
+        }).reduce(function(prev, cur) {
+          return prev + cur;
+        });
+      }).filter(function(winLineTotal) {
+        return Math.abs(winLineTotal) === 3;
+      });
+    
+      if (outcome[0] === 3) {
+        return 'win';
+      } else if (outcome[0] === -3) {
+        return 'lose';
+      } else if (squaresInPlay === 9) {
+        return 'draw';
+      } else {
+        return false;
+      }
+    }
   get Liveboard(){
     return this.gameboard;
   }
+
+  get LiveboardLength(){
+    return this.gameboard.length;
+  }
+
   set NumVisits(numvisits){
     this.numvisits = numvisits;
   }
@@ -87,7 +118,7 @@ class Tree{
   //Selection
   function Selection(liveBoard){
     var rootNodeExplorer = new Tree(liveBoard, null); //class Tree object
-    var iterations = 50;
+    var iterations = 10;
     //availableMoves(liveBoard).length;
      //var iterations = 8; //number of iterations for the for loop, most people seem to use 1000
    //looping the actions of expanding the tree, 
@@ -96,12 +127,15 @@ class Tree{
      for(var i = 0; i < iterations;i++){
        var explorerNode = rootNodeExplorer;
        explorerNode = Expansion(explorerNode);
-       if(explorerNode !== null){
-        var score = Simulation(explorerNode);
+       var simRuns = 0;
+       while(simRuns < 10){
+        var randChild = selectRandomChild(explorerNode);
+        var score = Simulation(randChild);
       //console.log("Simulation score: " + score);
-       Backpropagation(score, explorerNode);
-       AIMove = UCT(explorerNode);
+       Backpropagation(score, randChild);
+       simRuns++; 
        }
+       AIMove = UCT(explorerNode);
      }
      return AIMove;
    }
@@ -145,31 +179,46 @@ class Tree{
     if (explorerNode.is_terminal) {
         return explorerNode;
     } else {
+      //console.log("In this else statement for expansion");
         var availableMovesList = availableMoves(explorerNode.Liveboard);
+     
         availableMovesList.forEach(move => {
+
+         // console.log("In this loop for available moves"); -> looped 8 times
             // Create a new board state with the current move applied
             var newBoard = explorerNode.Liveboard.map(cell => {
+              //console.log("In this newBoard loop");
               if (cell === 1) return cpuIcon; // Use the AI's symbol
               else if (cell === -1) return playerIcon; // Use the player's symbol
               else return ' '; // Empty cells
-          }); // Clone the liveboard
-            newBoard[move] = getCurrentPlayer(explorerNode.Liveboard); // Apply the move
+          }); // Clone the liveboard 
+            //explorerNode.Liveboard.map((x) => x); // Clone the liveboard
+            newBoard[move] = getCurrentPlayer(explorerNode.Liveboard); // Apply the AI move to the newBoard
+           // console.log(typeof newBoard);
+            //console.log(newBoard);
+           //console.log(newBoard[move]);
+          // console.log("Child Node: " + move)
             // Create a new Tree node for the new board state
             var childNode = new Tree(newBoard, explorerNode);
+            //console.log("Child Node: " + childNode);
 
             // Add the new child node to the explorerNode's children
             // Assuming children is an object where key is the move and value is the node
             /*explorerNode.children[move] = childNode; */
              // Use the addChild method to add the new child node to the explorerNode's children
              explorerNode.addChild(move, childNode);
+              
+      //console.log("ExplorerNode Status" +explorerNode.is_fully_expanded);
+
         });
-        if (availableMovesList.length > 0) {
+        if (availableMovesList.length == explorerNode.ChildrenLength) {
           explorerNode.is_fully_expanded = true;
-      }
-
-
-        // Update the explorerNode's expansion status
-       // explorerNode.is_fully_expanded = true;
+          //console.log("ExplorerNode ChildrenLength " +explorerNode.ChildrenLength);
+          //console.log("Available moves length " + availableMovesList.length);
+            //   console.log("ExplorerNode Status" +explorerNode.is_fully_expanded);        
+      } //i believe this works because the loop is traversing through the moves available, so when all the moves have been found, the length of the children is the same as the length of the current moves available
+     
+       
         return explorerNode;
     }
 }
@@ -213,20 +262,48 @@ class Tree{
    } */
    function getCurrentPlayer(board) {
      // Count 'X's and 'O's on the board
-     var mctsAI = playerIcon === 'X' ? 'O' : 'X';
-     var playerCount = board.filter(cell => cell === playerIcon).length;
-     var mctsCount = board.filter(cell => cell === mctsAI).length;
+     var playerCount=0;
+     var mctsCount =0;
+//i realised that i'm passing in the LiveBoard and not the newBoard so I keep thinking I am counting strings but i was counting numbers. I amended that now
+     for(const val of board) {
+        if(val === -1){
+          playerCount = playerCount + 1;
+        }
+        else if(val === 1){
+          mctsCount = mctsCount + 1;
+        }
+     }
+    //console.log("Player Count " + playerCount);
+   // console.log("AI Count " + mctsCount);
+     //console.log("AI's symbol:" + mctsAI);
+     //var playerCount = board.filter(cell => cell === playerIcon).length;
+    // var mctsCount = board.filter(cell => cell === mctsAI).length;
+
+ //console.log("Player Count" + playerCount);
+     //console.log("AI Count" + mctsCount);
 
      /*var xCount = board.filter(cell => cell === 'X').length;
      var oCount = board.filter(cell => cell === 'O').length; */
    
      // Determine the current player
      if (playerCount > mctsCount) {
-         return mctsAI; // 'O's turn
-     } else {
-         return playerIcon; // 'X's turn
+         return cpuIcon; // 'AI's turn
+     } else if(playerCount == mctsCount) {  //the idea is that if the count is the same and since the player makes a move first, its the player's turn
+         return playerIcon; // 'Player's turn
      }
+     else if(mctsCount > playerCount){
+      return playerIcon; // player's turn
+     }
+    
    }
+   function selectRandomChild(explorerNode) {
+    const children = explorerNode.Children; // Children getter
+    const childrenKeys = Object.keys(children);
+    if (childrenKeys.length === 0) return null; // No children to select from
+
+    const randomIndex = Math.floor(Math.random() * childrenKeys.length); // select a random child to simulate rollouts with
+    return children[childrenKeys[randomIndex]];
+}
   /* function updateNodeExpansionStatus(explorerNode){
      var unexploredMoves = getUnexploredNode(explorerNode);
      if(unexploredMoves.length === 0){
@@ -234,7 +311,7 @@ class Tree{
      }
      explorerNode.is_fully_expanded = false;
    } */
-   function Simulation(explorerNode){
+   function Simulation(randChild){
      //playgame state between the selected node and returning the score of the complete game
      var winLines = [
       [0, 1, 2],
@@ -247,7 +324,7 @@ class Tree{
       [2, 4, 6]
     ];
     // console.log('explorer.gameboard:', explorerNode.Liveboard);
-     var tempBoard = explorerNode.Liveboard.map(cell => {
+     var tempBoard = randChild.Liveboard.map(cell => {
       if (cell === 1) return cpuIcon; // Use the AI's symbol
       else if (cell === -1) return playerIcon; // Use the player's symbol
       else return ' '; // Empty cells
@@ -255,12 +332,12 @@ class Tree{
     //console.log("Temp board: " + tempBoard);
      var player1 = playerIcon; //player symbolises human
      var player2 = cpuIcon; //cpu symbolises AI
-     var currentPlayer = player2;
+     var currentPlayer = player1;
     /* var tempBoard = explorerNode.Liveboard.map((x) => x); */
-     if(!Array.isArray(explorerNode.Liveboard)){
+    /* if(!Array.isArray(randChild.Liveboard)){
        console.log("tempboard not iterable");
        return;
-     }
+     } */
      
      while(true){
        var movesAvailable = availableMoves(tempBoard);
@@ -348,21 +425,25 @@ class Tree{
  
 } */
 
-function Backpropagation(score, explorerNode) {
-  while (explorerNode !== null && explorerNode instanceof Tree) {
+function Backpropagation(score, randChild) {
+  let currentChildNode = randChild;
+  while (currentChildNode !== null && currentChildNode instanceof Tree) {
     // Safe to proceed with explorerNode
-    var currentVisits = explorerNode.NumVisits;
-    var currentScore = explorerNode.Score;
+    var currentVisits = currentChildNode.NumVisits;
+    var currentScore = currentChildNode.Score;
     //console.log("Current visits:" + currentVisits);
     //console.log("Current Score:"+ score);
 
-    explorerNode.NumVisits = currentVisits + 1; // +1 for node visited
-    explorerNode.Score = currentScore + score; // add the score of simulation result
+    //explorerNode.Children.NumVisits = currentVisits + 1; // +1 for node visited
+    currentChildNode.NumVisits = currentVisits +1;
+    //console.log("Child Visits: "+explorerNode.Children.NumVisits); //seen as undefined
+    currentChildNode.Score = currentScore + score; // add the score of simulation result
 
     //console.log("Node Visits: "+ explorerNode.NumVisits); 
     //console.log("Explorer Node Score "+explorerNode.Score);
+    //console.log("Child Visits: "+explorerNode.Children.NumVisits);
 
-    explorerNode = explorerNode.parentNode; // explorerNode becomes the parent
+    currentChildNode = currentChildNode.parentNode; // explorerNode becomes the parent
   }
 }
 //
@@ -395,9 +476,9 @@ function Backpropagation(score, explorerNode) {
    function UCT(explorerNode) {
 
    // console.log("Explorer node Visits:" + explorerNode.NumVisits);
-    if (explorerNode.NumVisits === 0) {
-      return Number.MAX_SAFE_INTEGER; // Avoid division by zero in UCT formula
-    }
+    // explorerNode.Children.NumVisits = Number.MAX_SAFE_INTEGER; // Avoid division by zero in UCT formula
+  //   explorerNode.Children.Score = Number.MAX_SAFE_INTEGER;
+  
     var moveFound = 0;
     let bestScore = Number.MIN_SAFE_INTEGER;
     let bestMoves = [];
@@ -416,15 +497,18 @@ function Backpropagation(score, explorerNode) {
 
       //console.log("Does it get here at all ?");
       let childNode = children[move];
-      const scoreMean = 1 * childNode.Score / childNode.NumVisits;
-      console.log("Score Mean: " + scoreMean);
-      const parentsVisit = 2 * (Math.log(explorerNode.NumVisits));
-      //console.log("Parents Visit: " + parentsVisit);
       const childVisit = childNode.NumVisits;
-      console.log("Child Visit: " + childVisit);
+      const childScore = childNode.Score;
+      const scoreMean = childScore /childVisit;
+      console.log("Child Score: " + childScore);
+     console.log("Score Mean: " + scoreMean);
+      const parentsVisit = 2 * (Math.log(explorerNode.NumVisits));
+     console.log("Parents Visit: " + parentsVisit);
+      
+     console.log("Child Visit: " + childVisit);
   
-        let uctScore = (scoreMean) + (constNode) * Math.sqrt(parentsVisit/childVisit);        
-          console.log("UctScore: " + uctScore); 
+        let uctScore = (scoreMean) + (constNode) * (Math.sqrt(parentsVisit/childVisit));        
+          //console.log("UctScore: " + uctScore); 
         if (uctScore > bestScore) {
         bestScore = uctScore;
         bestMoves = [move]; // Reset bestMoves with the new best move
@@ -439,19 +523,20 @@ function Backpropagation(score, explorerNode) {
     if (bestMoves.length > 0) {
       const randomIndex = Math.floor(Math.random() * bestMoves.length);  
       moveFound = bestMoves[randomIndex];
+      console.log(moveFound);
       return moveFound;
     }
     //console.log("bestMoveFound: " + moveFound);
-    var emptySpaces = availableMoves(liveBoard);
+ /*   var emptySpaces = availableMoves(liveBoard);
     var randMoveGiven;
  if(emptySpaces.length > 0){
    randMove =(Math.floor(Math.random()*(emptySpaces.length))) % emptySpaces.length;
   randMoveGiven = emptySpaces[randMove];
  }else{
   randMoveGiven = -1;
- }
+ } */
     //
-    return  randMoveGiven; // returns random move from a list of available spaces until i get the implementation to work correctly.
+    return  null; // returns random move from a list of available spaces until i get the implementation to work correctly.
   }
    /*
    function UCT(explorerNode){

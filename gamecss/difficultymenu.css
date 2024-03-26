@@ -79,7 +79,7 @@ body a{
   color: rgb(174, 151, 242);
 }
 
-/*
+  /*
 Mobile (Smartphone) max-width: 480px.
 Low-Resolution Tablets and iPads max-width: 767px.
 Tablets iPads portrait mode max-width: 1024px.
@@ -90,28 +90,32 @@ https://www.geeksforgeeks.org/how-to-target-desktop-tablet-and-mobile-using-medi
 @media only screen and (max-width: 1280px) {
   body {
       background-image: url('../images/main_background.png');
+   
       background-repeat: no-repeat;
-      background-size: cover;
+      background-size: auto;
   }
 }
 @media only screen and (max-width: 480px) {
   body {
       background-image: url('../images/main_background.png');
+      
       background-repeat: no-repeat;
-      background-size: cover;
+      background-size: auto;
   }
 }
 @media only screen and (max-width: 1024px) {
   body {
       background-image: url('../images/main_background.png');
+      
       background-repeat: no-repeat;
-      background-size: cover;
+      background-size: auto;
   }
 }
 @media only screen and (max-width: 767px) {
   body {
       background-image: url('../images/main_background.png');
+     
       background-repeat: no-repeat;
-      background-size: cover;
+      background-size: auto;
   }
 }

@@ -72,20 +72,28 @@ https://www.geeksforgeeks.org/how-to-target-desktop-tablet-and-mobile-using-medi
 @media only screen and (max-width: 1280px) {
     body {
         background-image: url('../images/titlescreen_background.png');
+        background-repeat: no-repeat;
+        background-size: auto;
     }
   }
   @media only screen and (max-width: 480px) {
     body {
         background-image: url('../images/titlescreen_background.png');
+        background-repeat: no-repeat;
+        background-size: auto;
     }
   }
   @media only screen and (max-width: 1024px) {
     body {
         background-image: url('../images/titlescreen_background.png');
+        background-repeat: no-repeat;
+        background-size: auto;
     }
   }
   @media only screen and (max-width: 767px) {
     body {
         background-image: url('../images/titlescreen_background.png');
+        background-repeat: no-repeat;
+        background-size: auto; 
     }
   }

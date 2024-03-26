@@ -3,12 +3,12 @@
 */
 
 
-var cpuIcon = 'X';
-var playerIcon = 'O';
+var miniMaxIcon = 'X'; //MiniMax
+var randAIIcon = 'O'; //Random AI
 var currentPlayer = 'random';
 var RandMove;
 var AIMove;
-//settings for liveBoard: 1 is cpuIcon, -1 is playerIcon, 0 is empty
+//settings for liveBoard: 1 is miniMaxIcon, -1 is randAIIcon, 0 is empty
 var liveBoard = [1, -1, -1, -1, 1, 1, 1, -1, -1];
 var winningLines = [
   [0, 1, 2],
@@ -31,9 +31,9 @@ function renderBoard(board) {
   board.forEach(function(el, i) {
     var squareId = '#' + i.toString();
     if (el === -1) {
-      $(squareId).text(playerIcon);
+      $(squareId).text(randAIIcon);
     } else if (el === 1) {
-      $(squareId).text(cpuIcon);
+      $(squareId).text(miniMaxIcon);
     }
   });
   
@@ -128,7 +128,7 @@ function aiTutorial() {
         if (currentPlayer === 'random') {
             randomMove(liveBoard);
             liveBoard[RandMove] = currentPlayer === 'random' ? -1 : 1;
-            currentPlayer = 'minimax'; // Switch to the other AI
+            currentPlayer = 'minimax'; // Switch to MiniMax AI
             console.log('Random' + RandMove);
         } else {
             miniMax(liveBoard, 'aiPlayer');

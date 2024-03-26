@@ -177,4 +177,43 @@ html {
       height: 100px;
       width: 150px;
   }
-  
+  /*
+Mobile (Smartphone) max-width: 480px.
+Low-Resolution Tablets and iPads max-width: 767px.
+Tablets iPads portrait mode max-width: 1024px.
+Desktops max-width: 1280px.
+Huge size (Larger screen) max-width: 1281px and greater.
+https://www.geeksforgeeks.org/how-to-target-desktop-tablet-and-mobile-using-media-query/
+*/
+@media only screen and (max-width: 1280px) {
+  body {
+      background-image: url('../images/main_background.png');
+   
+      background-repeat: no-repeat;
+      background-size: auto;
+  }
+}
+@media only screen and (max-width: 480px) {
+  body {
+      background-image: url('../images/main_background.png');
+      
+      background-repeat: no-repeat;
+      background-size: auto;
+  }
+}
+@media only screen and (max-width: 1024px) {
+  body {
+      background-image: url('../images/main_background.png');
+      
+      background-repeat: no-repeat;
+      background-size: auto;
+  }
+}
+@media only screen and (max-width: 767px) {
+  body {
+      background-image: url('../images/main_background.png');
+     
+      background-repeat: no-repeat;
+      background-size: auto;
+  }
+}
